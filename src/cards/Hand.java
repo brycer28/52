@@ -3,41 +3,130 @@ package cards;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import cards.*;
-
 public class Hand extends ArrayList<Card> {
     public enum HandValue {
-        HI_CARD, PAIR, TWO_PAIR, THREE_OF_A_KIND,
+        HIGH_CARD, PAIR, TWO_PAIR, THREE_OF_A_KIND,
         STRAIGHT, FLUSH, FULL_HOUSE, FOUR_OF_A_KIND,
         STRAIGHT_FLUSH, ROYAL_FLUSH
     }
 
-    public HandValue evaluateHand(Hand hand) {
+    public static HandValue evaluateHand(Hand hand) {
         if (hand == null) {
             throw new NullPointerException("Hand is null");
         }
 
+        if (isRoyalFlush(hand) != null) {
+            return HandValue.ROYAL_FLUSH;
+        } else if (isStraightFlush(hand) != null) {
+            return HandValue.STRAIGHT_FLUSH;
+        } else if (isFourOfAKind(hand) != null) {
+            return HandValue.FOUR_OF_A_KIND;
+        } else if (isFullHouse(hand) != null) {
+            return HandValue.FULL_HOUSE;
+        } else if (isFlush(hand) != null) {
+            return HandValue.FLUSH;
+        } else if (isStraight(hand) != null) {
+            return HandValue.STRAIGHT;
+        } else if (isThreeOfAKind(hand) != null) {
+            return HandValue.THREE_OF_A_KIND;
+        } else if (isTwoPair(hand) != null) {
+            return HandValue.TWO_PAIR;
+        } else if (isPair(hand) != null) {
+            return HandValue.PAIR;
+        } else {
+            return HandValue.HIGH_CARD;
+        }
+    }
+
+    public static Card.Suit isRoyalFlush(Hand hand) {
+        if (isStraight(hand) == null || isFlush(hand) == null ) {
+            return null;
+        }
+
+        Map<Card.Suit, Long> suitCount = hand.stream()
+                .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
+
+        Card.Suit flushSuit = Collections.max(suitCount.entrySet(), Map.Entry.comparingByValue()).getKey();
+
+        Hand flushSuitOnly = hand.stream()
+                .filter(card -> card.getSuit().equals(flushSuit))
+                .collect(Collectors.toCollection(Hand::new));
+
+        List<Card.Rank> royalStraight = Arrays.asList(
+                Card.Rank.TEN, Card.Rank.JACK, Card.Rank.QUEEN, Card.Rank.QUEEN, Card.Rank.KING, Card.Rank.ACE);
+
+        List<Card.Rank> flushSuitOnlyRanks = flushSuitOnly.stream()
+                .map(Card::getRank)
+                .toList();
+
+        if (flushSuitOnlyRanks.containsAll(royalStraight)) {
+            return flushSuit;
+        }
         return null;
     }
 
-    public static Card.Rank isRoyalFlush(Hand hand) {
-        return null;
-    }
+    public static Card.Suit isStraightFlush(Hand hand) {
+        if (isStraight(hand) == null || isFlush(hand) == null ) {
+            return null;
+        }
 
-    public static Card.Rank isStraightFlush(Hand hand) {
+        Map<Card.Suit, Long> suitCount = hand.stream()
+                .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
+
+        Card.Suit flushSuit = Collections.max(suitCount.entrySet(), Map.Entry.comparingByValue()).getKey();
+
+        Hand flushSuitOnly = hand.stream()
+                .filter(card -> card.getSuit().equals(flushSuit))
+                .collect(Collectors.toCollection(Hand::new));
+
+        if (isStraight(flushSuitOnly) != null) {
+            return flushSuit;
+        }
         return null;
     }
 
     public static Card.Rank isFourOfAKind(Hand hand) {
-        return null;
+        Map<Card.Rank, Long> rankCount = hand.stream()
+                .collect(Collectors.groupingBy(Card::getRank, Collectors.counting()));
+
+        return rankCount.entrySet().stream()
+                .filter(entry -> entry.getValue() >= 4)
+                .map(Map.Entry::getKey)
+                .max(Comparator.comparingInt(Enum::ordinal))
+                .orElse(null);
     }
 
     public static Card.Rank isFullHouse(Hand hand) {
+        Map<Card.Rank, Long> rankCount = hand.stream()
+                .collect(Collectors.groupingBy(Card::getRank, Collectors.counting()));
+
+        // get rank of the pair
+        Optional<Card.Rank> pairRank = rankCount.entrySet().stream()
+                .filter(entry -> entry.getValue() == 2)
+                .map(Map.Entry::getKey)
+                .findAny();
+
+        // get rank of the set
+        Optional<Card.Rank> setRank = rankCount.entrySet().stream()
+                .filter(entry -> entry.getValue() == 3)
+                .map(Map.Entry::getKey)
+                .findFirst();
+
+        if (setRank.isPresent() && pairRank.isPresent() && pairRank.get() != setRank.get()) {
+            return setRank.get();
+        }
         return null;
     }
 
-    public static Card.Rank isFlush(Hand hand) {
-        return null;
+    public static Card.Suit isFlush(Hand hand) {
+        Map<Card.Suit, Long> suitCount = hand.stream()
+                .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
+
+        return suitCount.entrySet().stream()
+                .filter(entry -> entry.getValue() >= 5)
+                .map(Map.Entry::getKey)
+                .max(Comparator.comparingInt(Enum::ordinal))
+                .orElse(null);
     }
 
     public static Card.Rank isStraight(Hand hand) {
