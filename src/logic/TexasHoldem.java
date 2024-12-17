@@ -184,4 +184,7 @@ public class TexasHoldem {
         pot = 0;
         //GUI.resetGUI();
     }
+
+    public Hand getPlayerHand() { return playerHand; }
+    public Hand getDealerHand() { return dealerHand; }
 }

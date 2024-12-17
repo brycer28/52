@@ -10,12 +10,22 @@ public class Card {
     }
     private Suit suit;
     private Rank rank;
+    private boolean faceUp = true;
 
     public Card(Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;
     }
 
+    public String toString() {
+        String cardRank = rank.toString().toLowerCase();
+        String cardSuit = suit.toString().toLowerCase();
+
+        return cardRank + "_of_" + cardSuit;
+    }
+
+
+    public boolean isFaceUp() { return faceUp; }
     public Suit getSuit() { return suit; }
     public Rank getRank() { return rank; }
 }
