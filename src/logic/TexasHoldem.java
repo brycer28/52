@@ -40,16 +40,16 @@ public class TexasHoldem {
 
         new Thread(() -> {
             while (gameRunning) {
-                //playRound();
+                playRound();
 
                 boolean playAgain = true;
-                //playAgain = GUI.displayReplayPrompt();
+                playAgain = GUI.displayReplayPrompt();
                 if (!playAgain) {
                     gameRunning = false;
                     break;
                 }
                 gameRunning = true;
-                //resetGame();
+                resetGame();
             }
             //GUI.endGame();
         }).start();
@@ -60,9 +60,36 @@ public class TexasHoldem {
         dealCard(dealerHand);
         dealCard(playerHand);
         dealCard(dealerHand);
-        //GUI.updateHands();
+        GUI.updateHands();
 
-        //executeBettingRound();
+        executeBettingRound();
+        GUI.updateStats();
+        if (!gameRunning) return;
+
+        for (int i = 0; i < 3; i++) {
+            dealCard(communityCards);
+        }
+        GUI.updateCommunityCards();
+
+        executeBettingRound();
+        GUI.updateStats();
+        if (!gameRunning) return;
+
+        dealCard(communityCards);
+        GUI.updateCommunityCards();
+
+        executeBettingRound();
+        GUI.updateStats();
+        if (!gameRunning) return;
+
+        dealCard(communityCards);
+        GUI.updateCommunityCards();
+
+        executeBettingRound();
+        GUI.updateStats();
+        if (!gameRunning) return;
+
+        //determineWinner();
     }
 
     public void dealCard(Hand hand) {
@@ -164,9 +191,29 @@ public class TexasHoldem {
         return Options.CHECK;
     }
 
-    public Options getPlayerOption() {
-        return Options.values()[playerOption];
+    public void determineWinner() {
+        for (Card card : communityCards) {
+            playerHand.add(card);
+            dealerHand.add(card);
+        }
+
+        Hand.HandValue playerHandValue = Hand.evaluateHand(playerHand);
+        Hand.HandValue dealerHandValue = Hand.evaluateHand(dealerHand);
+
+        if (playerHandValue.ordinal() > dealerHandValue.ordinal()) {
+            playerChips += pot;
+            dealerChips -= currentBet;
+        } else if (playerHandValue.ordinal() < dealerHandValue.ordinal()) {
+            dealerChips += pot;
+            playerChips -= currentBet;
+        } else {
+            // handle tie eventually
+            System.out.println("NO WINNER");
+        }
+
+        GUI.showDealerHand();
     }
+
 
     private void waitForResponse() {
         try {
@@ -185,6 +232,18 @@ public class TexasHoldem {
         //GUI.resetGUI();
     }
 
+
+    // getters and setters
     public Hand getPlayerHand() { return playerHand; }
     public Hand getDealerHand() { return dealerHand; }
+    public Hand getCommunityCards() { return communityCards; }
+    public TexasHoldemPanel getTexasHoldemPanel() { return GUI; }
+    public int getPot() { return pot; }
+    public int getCurrentBet() { return currentBet; }
+    public int getDealerChips() { return dealerChips; }
+    public int getPlayerChips() { return playerChips; }
+    public Options getPlayerOption() { return Options.values()[playerOption]; }
+    public int getRaiseAmount() { return raiseAmount; }
+    public void setRaiseAmount(int raiseAmount) { this.raiseAmount = raiseAmount; }
+
 }

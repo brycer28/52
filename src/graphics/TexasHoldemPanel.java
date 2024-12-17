@@ -19,7 +19,7 @@ public class TexasHoldemPanel extends JPanel {
     JPanel optionsPanel = new JPanel();
     JPanel statsPanel = new JPanel();
     JPanel quitPanel = new JPanel();
-    JPanel quitButton = new JPanel();
+    JButton quitButton = new JButton("Quit");
     final int CARD_WIDTH = 100;
     final int GAME_WIDTH = 1500;
     final int GAME_HEIGHT = 1000;
@@ -47,7 +47,27 @@ public class TexasHoldemPanel extends JPanel {
         setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
         setBackground(new Color(0, 100, 0));
 
-        // create and add hand panels and community cards
+        List<JPanel> handPanels = initHands();
+        for (JPanel panel : handPanels) {
+            add(panel);
+        }
+
+        optionsPanel = initOptions();
+        optionsPanel.setBounds((GAME_WIDTH/2-OPT_WIDTH/2), 40, OPT_WIDTH, OPT_HEIGHT);
+        optionsPanel.setBackground(new Color(0, 100, 0));
+        add(optionsPanel);
+
+        statsPanel.setBounds(20, 20, STATS_WIDTH, STATS_HEIGHT);
+        statsPanel.setBackground(new Color(0, 150, 0));
+        add(statsPanel);
+        updateStats();
+
+        quitPanel.setBounds(25, 40 + STATS_HEIGHT, QUIT_WIDTH, QUIT_HEIGHT);
+        quitPanel.setBackground(new Color(0, 100, 0));
+        quitButton.setPreferredSize(new Dimension(QUIT_WIDTH, QUIT_HEIGHT));
+        //quitButton.addActionListener(e -> { endGame(); });
+        quitPanel.add(quitButton);
+        add(quitPanel);
     }
 
     public List<JPanel> initHands() {
@@ -128,16 +148,105 @@ public class TexasHoldemPanel extends JPanel {
         return optionsPanel;
     }
 
-//    public void updateHands() {
-//        SwingUtilities.invokeLater(() -> {
-//            playerHandPanel.removeAll();
-//            dealerHandPanel.removeAll();
-//
-//            for (Card card : logic.getPlayerHand()) {
-//                card.setFaceUp();
-//                CardPanel cardPanel = new CardPanel();
-//            }
-//        })
+    public void updateStats() {
+        SwingUtilities.invokeLater(() -> {
+            statsPanel.removeAll();
+            statsPanel.setLayout(new GridLayout(5,1,20,0));
+
+            JLabel potLabel = new JLabel("Current Pot: " + logic.getPot());
+            potLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
+            statsPanel.add(potLabel);
+
+            JLabel betLabel = new JLabel("Current Bet: " + logic.getCurrentBet());
+            betLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
+            statsPanel.add(betLabel);
+
+            JLabel playerChipsLabel = new JLabel("Player Chips: " + logic.getPlayerChips());
+            playerChipsLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
+            statsPanel.add(playerChipsLabel);
+
+            JLabel dealerChipsLabel = new JLabel("Dealer Chips: " + logic.getDealerChips());
+            dealerChipsLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
+            statsPanel.add(dealerChipsLabel);
+
+            JLabel dealerDecisionLabel = new JLabel("Dealer Decision: " + logic.getDealerOption());
+            dealerDecisionLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
+            statsPanel.add(dealerDecisionLabel);
+
+            repaint();
+            revalidate();
+        });
+    }
+
+    public void updateHands() {
+        SwingUtilities.invokeLater(() -> {
+            playerHandPanel.removeAll();
+            dealerHandPanel.removeAll();
+
+            for (Card card : logic.getPlayerHand()) {
+                card.setFaceUp(true);
+                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
+                playerHandPanel.add(cardPanel);
+            }
+
+            for (Card card : logic.getDealerHand()) {
+                card.setFaceUp(false);
+                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
+            }
+
+            repaint();
+            revalidate();
+        });
+    }
+
+    public void updateCommunityCards() {
+        SwingUtilities.invokeLater(() -> {
+            communityCardsPanel.removeAll();
+
+            for (Card card : logic.getCommunityCards()) {
+                card.setFaceUp(true);
+                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
+                communityCardsPanel.add(cardPanel);
+            }
+
+            repaint();
+            revalidate();
+        });
+    }
+
+    public void showDealerHand() {
+        SwingUtilities.invokeLater(() -> {
+            dealerHandPanel.removeAll();
+
+            for (Card card : logic.getDealerHand()) {
+                card.setFaceUp(true);
+                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
+                dealerHandPanel.add(cardPanel);
+            }
+
+            repaint();
+            revalidate();
+        });
+    }
+
+    public boolean displayReplayPrompt() {
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Would you like to play another round?",
+                "Play Again?",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        return choice == JOptionPane.YES_OPTION;
+    }
+
+//    public void endGame() {
+//        this.getParent().dispose();
 //    }
+//
+//    public JFrame getParent() {
+//        return (JFrame) SwingUtilities.getWindowAncestor(this);
+//    }
+
 }
 

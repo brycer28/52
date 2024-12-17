@@ -26,6 +26,7 @@ public class Card {
 
 
     public boolean isFaceUp() { return faceUp; }
+    public void setFaceUp(boolean faceUp) { this.faceUp = faceUp; }
     public Suit getSuit() { return suit; }
     public Rank getRank() { return rank; }
 }

@@ -2,6 +2,8 @@ package main;
 
 import cards.*;
 import graphics.CardPanel;
+import graphics.TexasHoldemPanel;
+import logic.TexasHoldem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,17 +15,11 @@ public class Main {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1500, 1000));
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setBackground(Color.gray);
+        TexasHoldem texasHoldem = new TexasHoldem();
 
-        CardPanel cardPanel = new CardPanel(new Card(Card.Suit.SPADES, Card.Rank.ACE), 100);
+        frame.add(texasHoldem.getTexasHoldemPanel());
 
-        mainPanel.add(cardPanel);
-        frame.add(mainPanel);
-
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
         frame.setVisible(true);
+        frame.pack();
     }
 }
