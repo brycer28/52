@@ -24,14 +24,14 @@ public class TexasHoldemPanel extends JPanel {
     final int GAME_WIDTH = 1500;
     final int GAME_HEIGHT = 1000;
     final int HAND_WIDTH = 220;
-    final int HAND_HEIGHT = 150;
+    final int HAND_HEIGHT = 160;
     final int CC_WIDTH = 550;
     final int CC_HEIGHT = 150;
     final int BUTTON_WIDTH = 50;
     final int BUTTON_HEIGHT = 20;
     final int OPT_WIDTH = 500;
     final int OPT_HEIGHT = 70;
-    final int STATS_WIDTH = 120;
+    final int STATS_WIDTH = 140;
     final int STATS_HEIGHT = 200;
     final int LABEL_WIDTH = 100;
     final int LABEL_HEIGHT = 40;
@@ -93,21 +93,21 @@ public class TexasHoldemPanel extends JPanel {
         JButton checkButton = new JButton("Check");
         checkButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         checkButton.addActionListener(e -> {
-            //logic.setPlayerDecision(0);
+            logic.setPlayerOption(TexasHoldem.Options.CHECK);
         });
 
         // create call button
         JButton callButton = new JButton("Call");
         callButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         callButton.addActionListener(e -> {
-            //logic.setPlayerDecision(1);
+            logic.setPlayerOption(TexasHoldem.Options.CALL);
         });
 
         // create fold button
         JButton foldButton = new JButton("Fold");
         foldButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         foldButton.addActionListener(e -> {
-            //logic.setPlayerDecision(3);
+            logic.setPlayerOption(TexasHoldem.Options.FOLD);
         });
 
         // create raise field and button to submit
@@ -124,8 +124,8 @@ public class TexasHoldemPanel extends JPanel {
                 if (raiseInt < 0) {
                     JOptionPane.showMessageDialog(null, "You can't raise a negative number", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    //logic.setRaiseAmount(raiseInt);
-                    //logic.setPlayerDecision(2);
+                    logic.setRaiseAmount(raiseInt);
+                    logic.setPlayerOption(TexasHoldem.Options.RAISE);
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "You can't raise a negative number", "Error", JOptionPane.ERROR_MESSAGE);
@@ -169,7 +169,7 @@ public class TexasHoldemPanel extends JPanel {
             dealerChipsLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
             statsPanel.add(dealerChipsLabel);
 
-            JLabel dealerDecisionLabel = new JLabel("Dealer Decision: " + logic.getDealerOption());
+            JLabel dealerDecisionLabel = new JLabel("Dealer Option: " + logic.getDealerOption());
             dealerDecisionLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
             statsPanel.add(dealerDecisionLabel);
 
@@ -190,8 +190,9 @@ public class TexasHoldemPanel extends JPanel {
             }
 
             for (Card card : logic.getDealerHand()) {
-                card.setFaceUp(false);
+                card.setFaceUp(true);
                 CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
+                dealerHandPanel.add(cardPanel);
             }
 
             repaint();
@@ -227,6 +228,18 @@ public class TexasHoldemPanel extends JPanel {
             repaint();
             revalidate();
         });
+    }
+
+    public void resetGUI() {
+        playerHandPanel.removeAll();
+        dealerHandPanel.removeAll();
+        communityCardsPanel.removeAll();
+        updateStats();
+        updateHands();
+        updateCommunityCards();
+
+        repaint();
+        revalidate();
     }
 
     public boolean displayReplayPrompt() {
