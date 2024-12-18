@@ -6,6 +6,7 @@ The suite features a menu where the user may select their desired game, which wi
 
 **Future Features:**
 - Progress Tracking
+- Suite-wide Betting
 - Color Themes
-- Deck Theme Selection
+- Deck Themes
 - More Games
