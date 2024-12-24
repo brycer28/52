@@ -214,8 +214,8 @@ public class TexasHoldem {
             dealerHand.add(card);
         }
 
-        Hand.HandValue playerHandValue = Hand.evaluateHand(playerHand);
-        Hand.HandValue dealerHandValue = Hand.evaluateHand(dealerHand);
+        Hand.HandValue playerHandValue = playerHand.evaluateHand();
+        Hand.HandValue dealerHandValue = dealerHand.evaluateHand();
 
         if (playerHandValue.ordinal() > dealerHandValue.ordinal()) {
             playerChips += pot;
@@ -226,8 +226,8 @@ public class TexasHoldem {
             playerChips -= currentBet;
             GUI.displayWinner(false);
         } else {
-            Object playerBestCard = Hand.determineTieBreaker(playerHand);
-            Object dealerBestCard = Hand.determineTieBreaker(dealerHand);
+            Object playerBestCard = playerHand.determineTieBreaker();
+            Object dealerBestCard = dealerHand.determineTieBreaker();
 
             if (playerBestCard instanceof Card.Suit) {
 

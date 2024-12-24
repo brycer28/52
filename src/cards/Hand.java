@@ -15,56 +15,47 @@ public class Hand extends ArrayList<Card> {
         deck.pop();
     }
 
-    public static Object determineTieBreaker(Hand hand) {
-        if (hand == null) {
-            throw new NullPointerException("Hand is null");
-        }
+    public Object determineTieBreaker() {
+        HandValue handValue = evaluateHand();
 
-        HandValue handValue = evaluateHand(hand);
-
-        if (handValue == HandValue.ROYAL_FLUSH) return isRoyalFlush(hand);
-        else if (handValue == HandValue.STRAIGHT_FLUSH) return isStraightFlush(hand);
-        else if (handValue == HandValue.FOUR_OF_A_KIND) return isFourOfAKind(hand);
-        else if (handValue == HandValue.FULL_HOUSE) return isFullHouse(hand);
-        else if (handValue == HandValue.FLUSH) return isFlush(hand);
-        else if (handValue == HandValue.STRAIGHT) return isStraight(hand);
-        else if (handValue == HandValue.THREE_OF_A_KIND) return isThreeOfAKind(hand);
-        else if (handValue == HandValue.TWO_PAIR) return isTwoPair(hand);
-        else if (handValue == HandValue.PAIR) return isPair(hand);
-        else return isHighCard(hand);
+        if (handValue == HandValue.ROYAL_FLUSH) return isRoyalFlush();
+        else if (handValue == HandValue.STRAIGHT_FLUSH) return isStraightFlush();
+        else if (handValue == HandValue.FOUR_OF_A_KIND) return isFourOfAKind();
+        else if (handValue == HandValue.FULL_HOUSE) return isFullHouse();
+        else if (handValue == HandValue.FLUSH) return isFlush();
+        else if (handValue == HandValue.STRAIGHT) return isStraight();
+        else if (handValue == HandValue.THREE_OF_A_KIND) return isThreeOfAKind();
+        else if (handValue == HandValue.TWO_PAIR) return isTwoPair();
+        else if (handValue == HandValue.PAIR) return isPair();
+        else return isHighCard();
     }
 
-
-    public static HandValue evaluateHand(Hand hand) {
-        if (hand == null) {
-            throw new NullPointerException("Hand is null");
-        }
-
-        if (isRoyalFlush(hand) != null) return HandValue.ROYAL_FLUSH;
-        else if (isStraightFlush(hand) != null) return HandValue.STRAIGHT_FLUSH;
-        else if (isFourOfAKind(hand) != null) return HandValue.FOUR_OF_A_KIND;
-        else if (isFullHouse(hand) != null) return HandValue.FULL_HOUSE;
-        else if (isFlush(hand) != null) return HandValue.FLUSH;
-        else if (isStraight(hand) != null) return HandValue.STRAIGHT;
-        else if (isThreeOfAKind(hand) != null) return HandValue.THREE_OF_A_KIND;
-        else if (isTwoPair(hand) != null) return HandValue.TWO_PAIR;
-        else if (isPair(hand) != null) return HandValue.PAIR;
+    public HandValue evaluateHand() {
+        if (isRoyalFlush() != null) return HandValue.ROYAL_FLUSH;
+        else if (isStraightFlush() != null) return HandValue.STRAIGHT_FLUSH;
+        else if (isFourOfAKind() != null) return HandValue.FOUR_OF_A_KIND;
+        else if (isFullHouse() != null) return HandValue.FULL_HOUSE;
+        else if (isFlush() != null) return HandValue.FLUSH;
+        else if (isStraight() != null) return HandValue.STRAIGHT;
+        else if (isThreeOfAKind() != null) return HandValue.THREE_OF_A_KIND;
+        else if (isTwoPair() != null) return HandValue.TWO_PAIR;
+        else if (isPair() != null) return HandValue.PAIR;
         else return HandValue.HIGH_CARD;
     }
 
 
 
-    public static Card.Suit isRoyalFlush(Hand hand) {
-        if (isStraight(hand) == null || isFlush(hand) == null ) {
+    public Card.Suit isRoyalFlush() {
+        if (this.isStraight() == null || this.isFlush() == null ) {
             return null;
         }
 
-        Map<Card.Suit, Long> suitCount = hand.stream()
+        Map<Card.Suit, Long> suitCount = this.stream()
                 .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
 
         Card.Suit flushSuit = Collections.max(suitCount.entrySet(), Map.Entry.comparingByValue()).getKey();
 
-        Hand flushSuitOnly = hand.stream()
+        Hand flushSuitOnly = this.stream()
                 .filter(card -> card.getSuit().equals(flushSuit))
                 .collect(Collectors.toCollection(Hand::new));
 
@@ -81,28 +72,29 @@ public class Hand extends ArrayList<Card> {
         return null;
     }
 
-    public static Card.Suit isStraightFlush(Hand hand) {
-        if (isStraight(hand) == null || isFlush(hand) == null ) {
+    public Card.Suit isStraightFlush() {
+        if (this.isStraight() == null || this.isFlush() == null ) {
             return null;
         }
 
-        Map<Card.Suit, Long> suitCount = hand.stream()
+        Map<Card.Suit, Long> suitCount = this.stream()
                 .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
 
         Card.Suit flushSuit = Collections.max(suitCount.entrySet(), Map.Entry.comparingByValue()).getKey();
 
-        Hand flushSuitOnly = hand.stream()
+        Hand flushSuitOnly = this.stream()
                 .filter(card -> card.getSuit().equals(flushSuit))
                 .collect(Collectors.toCollection(Hand::new));
 
-        if (isStraight(flushSuitOnly) != null) {
+        if (flushSuitOnly.isStraight() != null) {
             return flushSuit;
         }
+
         return null;
     }
 
-    public static Card.Rank isFourOfAKind(Hand hand) {
-        Map<Card.Rank, Long> rankCount = hand.stream()
+    public Card.Rank isFourOfAKind() {
+        Map<Card.Rank, Long> rankCount = this.stream()
                 .collect(Collectors.groupingBy(Card::getRank, Collectors.counting()));
 
         return rankCount.entrySet().stream()
@@ -112,8 +104,8 @@ public class Hand extends ArrayList<Card> {
                 .orElse(null);
     }
 
-    public static Card.Rank isFullHouse(Hand hand) {
-        Map<Card.Rank, Long> rankCount = hand.stream()
+    public Card.Rank isFullHouse() {
+        Map<Card.Rank, Long> rankCount = this.stream()
                 .collect(Collectors.groupingBy(Card::getRank, Collectors.counting()));
 
         // get rank of the pair
@@ -134,8 +126,8 @@ public class Hand extends ArrayList<Card> {
         return null;
     }
 
-    public static Card.Suit isFlush(Hand hand) {
-        Map<Card.Suit, Long> suitCount = hand.stream()
+    public Card.Suit isFlush() {
+        Map<Card.Suit, Long> suitCount = this.stream()
                 .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
 
         return suitCount.entrySet().stream()
@@ -145,12 +137,12 @@ public class Hand extends ArrayList<Card> {
                 .orElse(null);
     }
 
-    public static Card.Rank isStraight(Hand hand) {
+    public Card.Rank isStraight() {
         // hand must be at contain 5 cards to make a straight
-        if (hand.size() < 5) return null;
+        if (this.size() < 5) return null;
 
         // get set of unique ranks
-        Set<Card.Rank> uniqueRanks = hand.stream()
+        Set<Card.Rank> uniqueRanks = this.stream()
                 .map(Card::getRank)
                 .collect(Collectors.toSet());
 
@@ -199,8 +191,8 @@ public class Hand extends ArrayList<Card> {
 //        return true;
 //    }
 
-    public static Card.Rank isThreeOfAKind(Hand hand) {
-        Map<Card.Rank, Long> rankCount = hand.stream()
+    public Card.Rank isThreeOfAKind() {
+        Map<Card.Rank, Long> rankCount = this.stream()
                 .collect(Collectors.groupingBy(Card::getRank, Collectors.counting()));
 
         return rankCount.entrySet().stream()
@@ -210,8 +202,8 @@ public class Hand extends ArrayList<Card> {
                 .orElse(null);
     }
 
-    public static Card.Rank isTwoPair(Hand hand) {
-        Map<Card.Rank, Long> rankCount = hand.stream()
+    public Card.Rank isTwoPair() {
+        Map<Card.Rank, Long> rankCount = this.stream()
                 .collect(Collectors.groupingBy(Card::getRank, Collectors.counting()));
 
         // count the number of pairs in the hand
@@ -222,13 +214,13 @@ public class Hand extends ArrayList<Card> {
                 .toList();
 
         if (pairRanks.size() >= 2) {
-            return pairRanks.get(0);
+            return pairRanks.getFirst();
         }
         return null;
     }
 
-    public static Card.Rank isPair(Hand hand) {
-        Map<Card.Rank, Long> rankCount = hand.stream()
+    public Card.Rank isPair() {
+        Map<Card.Rank, Long> rankCount = this.stream()
                 .collect(Collectors.groupingBy(Card::getRank, Collectors.counting()));
 
         return rankCount.entrySet().stream()
@@ -238,12 +230,10 @@ public class Hand extends ArrayList<Card> {
                 .orElse(null);
     }
 
-    public static Card.Rank isHighCard(Hand hand) {
-        Card.Rank rank = hand.stream()
+    public Card.Rank isHighCard() {
+        return this.stream()
                 .map((Card::getRank))
                 .max(Comparator.comparingInt(Enum::ordinal))
                 .orElse(null);
-
-        return rank;
     }
 }

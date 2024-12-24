@@ -23,8 +23,6 @@ public class Blackjack {
         playerHand.dealCard(deck);
         dealerHand.dealCard(deck);
 
-        System.out.println("Would you like to hit or stand? - Current hand: " + playerHand.)
+        //System.out.println("Would you like to hit or stand? - Current hand: " + playerHand.)
     }
-
-    public void
 }
