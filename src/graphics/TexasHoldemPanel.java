@@ -65,7 +65,7 @@ public class TexasHoldemPanel extends JPanel {
         quitPanel.setBounds(25, 40 + STATS_HEIGHT, QUIT_WIDTH, QUIT_HEIGHT);
         quitPanel.setBackground(new Color(0, 100, 0));
         quitButton.setPreferredSize(new Dimension(QUIT_WIDTH, QUIT_HEIGHT));
-        //quitButton.addActionListener(e -> { endGame(); });
+        quitButton.addActionListener(e -> { endGame(); });
         quitPanel.add(quitButton);
         add(quitPanel);
     }
@@ -253,13 +253,32 @@ public class TexasHoldemPanel extends JPanel {
         return choice == JOptionPane.YES_OPTION;
     }
 
-//    public void endGame() {
-//        this.getParent().dispose();
-//    }
-//
-//    public JFrame getParent() {
-//        return (JFrame) SwingUtilities.getWindowAncestor(this);
-//    }
+    public void displayPlayerFolded(boolean isPlayer) {
+        if (isPlayer) {
+            JOptionPane.showMessageDialog(this, "You Folded. Dealer Wins!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Dealer Folded. You Win!");
+        }
+    }
+
+    public void displayWinner(boolean isPlayer) {
+        if (isPlayer) {
+            JOptionPane.showMessageDialog(this, "You Won!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Dealer Won!");
+        }
+    }
+
+    public void endGame() {
+        JFrame parentFrame = (JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this);
+        if (parentFrame != null) {
+            parentFrame.dispose();
+        } else {
+            System.out.println("Frame not found :(");
+        }
+        System.exit(0);
+    }
+
 
 }
 

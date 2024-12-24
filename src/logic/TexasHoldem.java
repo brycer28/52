@@ -20,10 +20,9 @@ public class TexasHoldem {
     private boolean validRaise = false;
     private int raiseAmount = 0;
     private CountDownLatch latch;
-
-    public Options playerOption;
-    public Options dealerOption;
-    public boolean gameRunning = true;
+    private Options playerOption;
+    private Options dealerOption;
+    private boolean gameRunning = true;
 
     public enum Options {
         CHECK, CALL, RAISE, FOLD
@@ -41,6 +40,7 @@ public class TexasHoldem {
         new Thread(() -> {
             while (gameRunning) {
                 playRound();
+                GUI.updateStats();
 
                 boolean playAgain = true;
                 playAgain = GUI.displayReplayPrompt();
@@ -51,15 +51,15 @@ public class TexasHoldem {
                 gameRunning = true;
                 resetGame();
             }
-            //GUI.endGame();
+            GUI.endGame();
         }).start();
     }
 
     public void playRound() {
-        dealCard(playerHand);
-        dealCard(dealerHand);
-        dealCard(playerHand);
-        dealCard(dealerHand);
+        playerHand.dealCard(deck);
+        dealerHand.dealCard(deck);
+        playerHand.dealCard(deck);
+        dealerHand.dealCard(deck);
         GUI.updateHands();
 
         executeBettingRound();
@@ -67,7 +67,7 @@ public class TexasHoldem {
         if (!gameRunning) return;
 
         for (int i = 0; i < 3; i++) {
-            dealCard(communityCards);
+            communityCards.dealCard(deck);
         }
         GUI.updateCommunityCards();
 
@@ -75,14 +75,14 @@ public class TexasHoldem {
         GUI.updateStats();
         if (!gameRunning) return;
 
-        dealCard(communityCards);
+        communityCards.dealCard(deck);
         GUI.updateCommunityCards();
 
         executeBettingRound();
         GUI.updateStats();
         if (!gameRunning) return;
 
-        dealCard(communityCards);
+        communityCards.dealCard(deck);
         GUI.updateCommunityCards();
 
         executeBettingRound();
@@ -90,11 +90,6 @@ public class TexasHoldem {
         if (!gameRunning) return;
 
         determineWinner();
-    }
-
-    public void dealCard(Hand hand) {
-        hand.add(deck.peek());
-        deck.pop();
     }
 
     public void executeBettingRound() {
@@ -107,7 +102,7 @@ public class TexasHoldem {
 
         if (playerOption == Options.FOLD) {
             gameRunning = false;
-            //GUI.displayPlayerFolded(true);
+            GUI.displayPlayerFolded(true);
             return;
         }
 
@@ -115,8 +110,7 @@ public class TexasHoldem {
 
         if (dealerOption == Options.FOLD) {
             gameRunning = false;
-            //GUI.displayPlayerFolded(false);
-            return;
+            GUI.displayPlayerFolded(false);
         }
     }
 
@@ -127,7 +121,11 @@ public class TexasHoldem {
             Options option;
             if (isPlayer) {
                 option = getPlayerOption();
-            } else option = getDealerOption();
+            } else {
+                setDealerOption();
+                option = getDealerOption();
+            }
+
 
             switch (option) {
                 case CHECK:
@@ -137,7 +135,7 @@ public class TexasHoldem {
                     handleCall(isPlayer);
                     break;
                 case RAISE:
-                    //handleRaise(isPlayer);
+                    handleRaise(isPlayer);
                     break;
                 case FOLD:
                     handleFold(isPlayer);
@@ -164,6 +162,26 @@ public class TexasHoldem {
         else validOption = false;
     }
 
+    public void handleRaise(boolean isPlayer) {
+         int chips = isPlayer  ? playerChips : dealerChips;
+
+         if (chips >= currentBet) {
+             while(!validRaise) {
+                 raiseAmount = getRaiseAmount();
+                 if (raiseAmount > 0 && playerChips >= currentBet + raiseAmount) {
+                     validRaise = true;
+                 }
+             }
+             currentBet += raiseAmount;
+             pot += raiseAmount;
+
+             if (isPlayer) playerChips -= raiseAmount;
+             else dealerChips -= raiseAmount;
+
+             validOption = true;
+         }
+    }
+
     public void handleFold(boolean isPlayer) {
         pot += currentBet;
         if (isPlayer && playerOption == Options.FOLD) {
@@ -176,18 +194,18 @@ public class TexasHoldem {
         validOption = true;
     }
 
-    public Options getDealerOption() {
+    public void setDealerOption() {
         Random rand = new Random();
         int prob = rand.nextInt(20) + 1;
-        if (prob == 1) return Options.FOLD;
+        if (prob == 1) dealerOption = Options.FOLD;
 
         if (playerOption == Options.RAISE) {
             prob = rand.nextInt(10) + 1;
-            if (prob == 1) return Options.FOLD;
-            else return Options.CALL;
+            if (prob == 1) dealerOption = Options.FOLD;
+            else dealerOption = Options.CALL;
+        } else {
+            dealerOption = Options.CHECK;
         }
-
-        return Options.CHECK;
     }
 
     public void determineWinner() {
@@ -202,11 +220,24 @@ public class TexasHoldem {
         if (playerHandValue.ordinal() > dealerHandValue.ordinal()) {
             playerChips += pot;
             dealerChips -= currentBet;
+            GUI.displayWinner(true);
         } else if (playerHandValue.ordinal() < dealerHandValue.ordinal()) {
             dealerChips += pot;
             playerChips -= currentBet;
+            GUI.displayWinner(false);
         } else {
-            // handle tie eventually
+            Object playerBestCard = Hand.determineTieBreaker(playerHand);
+            Object dealerBestCard = Hand.determineTieBreaker(dealerHand);
+
+            if (playerBestCard instanceof Card.Suit) {
+
+
+
+
+            }
+
+
+
             System.out.println("NO WINNER");
         }
 
@@ -231,7 +262,6 @@ public class TexasHoldem {
         GUI.resetGUI();
     }
 
-
     // getters and setters
     public Hand getPlayerHand() { return playerHand; }
     public Hand getDealerHand() { return dealerHand; }
@@ -242,6 +272,7 @@ public class TexasHoldem {
     public int getDealerChips() { return dealerChips; }
     public int getPlayerChips() { return playerChips; }
     public Options getPlayerOption() { return playerOption; }
+    public Options getDealerOption() { return dealerOption; }
     public void setPlayerOption(Options playerOption) {
         this.playerOption = playerOption;
         latch.countDown();

@@ -10,33 +10,49 @@ public class Hand extends ArrayList<Card> {
         STRAIGHT_FLUSH, ROYAL_FLUSH
     }
 
+    public void dealCard(Deck deck) {
+        add(deck.peek());
+        deck.pop();
+    }
+
+    public static Object determineTieBreaker(Hand hand) {
+        if (hand == null) {
+            throw new NullPointerException("Hand is null");
+        }
+
+        HandValue handValue = evaluateHand(hand);
+
+        if (handValue == HandValue.ROYAL_FLUSH) return isRoyalFlush(hand);
+        else if (handValue == HandValue.STRAIGHT_FLUSH) return isStraightFlush(hand);
+        else if (handValue == HandValue.FOUR_OF_A_KIND) return isFourOfAKind(hand);
+        else if (handValue == HandValue.FULL_HOUSE) return isFullHouse(hand);
+        else if (handValue == HandValue.FLUSH) return isFlush(hand);
+        else if (handValue == HandValue.STRAIGHT) return isStraight(hand);
+        else if (handValue == HandValue.THREE_OF_A_KIND) return isThreeOfAKind(hand);
+        else if (handValue == HandValue.TWO_PAIR) return isTwoPair(hand);
+        else if (handValue == HandValue.PAIR) return isPair(hand);
+        else return isHighCard(hand);
+    }
+
+
     public static HandValue evaluateHand(Hand hand) {
         if (hand == null) {
             throw new NullPointerException("Hand is null");
         }
 
-        if (isRoyalFlush(hand) != null) {
-            return HandValue.ROYAL_FLUSH;
-        } else if (isStraightFlush(hand) != null) {
-            return HandValue.STRAIGHT_FLUSH;
-        } else if (isFourOfAKind(hand) != null) {
-            return HandValue.FOUR_OF_A_KIND;
-        } else if (isFullHouse(hand) != null) {
-            return HandValue.FULL_HOUSE;
-        } else if (isFlush(hand) != null) {
-            return HandValue.FLUSH;
-        } else if (isStraight(hand) != null) {
-            return HandValue.STRAIGHT;
-        } else if (isThreeOfAKind(hand) != null) {
-            return HandValue.THREE_OF_A_KIND;
-        } else if (isTwoPair(hand) != null) {
-            return HandValue.TWO_PAIR;
-        } else if (isPair(hand) != null) {
-            return HandValue.PAIR;
-        } else {
-            return HandValue.HIGH_CARD;
-        }
+        if (isRoyalFlush(hand) != null) return HandValue.ROYAL_FLUSH;
+        else if (isStraightFlush(hand) != null) return HandValue.STRAIGHT_FLUSH;
+        else if (isFourOfAKind(hand) != null) return HandValue.FOUR_OF_A_KIND;
+        else if (isFullHouse(hand) != null) return HandValue.FULL_HOUSE;
+        else if (isFlush(hand) != null) return HandValue.FLUSH;
+        else if (isStraight(hand) != null) return HandValue.STRAIGHT;
+        else if (isThreeOfAKind(hand) != null) return HandValue.THREE_OF_A_KIND;
+        else if (isTwoPair(hand) != null) return HandValue.TWO_PAIR;
+        else if (isPair(hand) != null) return HandValue.PAIR;
+        else return HandValue.HIGH_CARD;
     }
+
+
 
     public static Card.Suit isRoyalFlush(Hand hand) {
         if (isStraight(hand) == null || isFlush(hand) == null ) {
@@ -202,7 +218,7 @@ public class Hand extends ArrayList<Card> {
         List<Card.Rank> pairRanks = rankCount.entrySet().stream()
                 .filter(entry -> entry.getValue() >= 2)
                 .map(Map.Entry::getKey)
-                .sorted((r1, r2) -> Integer.compare(r1.ordinal(), r2.ordinal()))
+                .sorted(Comparator.comparingInt(Enum::ordinal))
                 .toList();
 
         if (pairRanks.size() >= 2) {
