@@ -3,11 +3,50 @@ package cards;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import cards.Card.*;
+
 public class Hand extends ArrayList<Card> {
     public enum HandValue {
         HIGH_CARD, PAIR, TWO_PAIR, THREE_OF_A_KIND,
         STRAIGHT, FLUSH, FULL_HOUSE, FOUR_OF_A_KIND,
         STRAIGHT_FLUSH, ROYAL_FLUSH
+    }
+
+    public int getHandValue() {
+        int handValue = 0;
+        int aceCount = 0;
+
+//        for (Card c : this) {
+//            if (c.getRank() == Card.Rank.ACE) {
+//                handValue += 11;
+//                aceCount++;
+//                break;
+//            }
+//            else if (c.getRank() == Card.Rank.JACK || c.getRank() == Card.Rank.QUEEN || c.getRank() == Card.Rank.KING) {
+//                handValue += 10;
+//            } else {
+//                handValue += c.getRank().ordinal() + 2;
+//            }
+//        }
+
+        for (Card card : this) {
+            switch (card.getRank()) {
+                case ACE: {
+                    handValue += 11;
+                    aceCount ++;
+                    break;
+                }
+                case Rank.TEN: case Rank.JACK: case Rank.QUEEN: case Rank.KING: {
+                    handValue += 10;
+                    break;
+                }
+                default: {
+                    handValue += card.getRank().ordinal() + 2;
+                    break;
+                }
+            }
+        }
+        return handValue;
     }
 
     public void dealCard(Deck deck) {
