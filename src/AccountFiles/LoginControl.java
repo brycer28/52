@@ -3,29 +3,19 @@ package AccountFiles;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
+import Client.*;
 
 public class LoginControl {
 
     private JPanel container;
-    //private GameClient client;
+    private GameClient client;
 
     public LoginControl(JPanel container) { // Add GameClient to parameters
         this.container = container;
     }
 
     public void actionPerformed(ActionEvent action) {
-        Properties prop = new Properties();
-
-        try {
-            FileInputStream fis = new FileInputStream("src/LoginFiles/loginCredentials.properties");
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
         String command = action.getActionCommand();
 
@@ -50,8 +40,12 @@ public class LoginControl {
                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again");
             }
         }
+    }
 
-
+    public void success() {
+        LoginPanel loginPanel = (LoginPanel)container.getComponent(1);
+        CardLayout cardLayout = (CardLayout) container.getLayout();
+        cardLayout.show(container, "TexasHoldemPanel");
     }
 
 }
