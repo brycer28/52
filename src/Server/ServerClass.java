@@ -75,13 +75,13 @@ public class ServerClass extends AbstractServer {
                 if (success) {
                     validate = "login=successful";
                     User user = database.getUser(data.getUsername());
-                    client.sendToClient(new LoginData(success, user));
+               //     client.sendToClient(new LoginData(success, user));
                     client.setInfo("username", user.getUsername());
                     updateClientInfo(client, user.getUsername(), user.getBalance());
                     updateClientActivity(client, "Online");
                     logToServer("User '" + data.getUsername() + "' logged in successfully");
                 } else {
-                    client.sendToClient(new LoginData(false, null));
+               //     client.sendToClient(new LoginData(false, null));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -468,12 +468,13 @@ public class ServerClass extends AbstractServer {
 
             // Add card info only for the player who’s requesting
             if (player.getUsername().equals(targetUsername)) {
-                List<CardClass> cards = player.getHand().getCards();
-                sb.append("|").append(cards.size());
-                for (CardClass card : cards) {
-                    sb.append("|").append(card.getSuit())
-                            .append("|").append(card.getRank());
-                }
+            //    List<CardClass> cards = player.getHand().getCards();
+            //    sb.append("|").append(cards.size());
+            //    for (CardClass card : cards) {
+            //        sb.append("|").append(card.getSuit())
+            //                .append("|").append(card.getRank());
+
+            //    }
             } else {
                 sb.append("|0");
             }
@@ -577,6 +578,10 @@ public class ServerClass extends AbstractServer {
         }
     }
 
+    private Game findGameForPlayer(String username) {
+    return null;
+    }
+
     // Sends updated game state to all connected players
     private void broadcastGameState(Game game) {
         Thread[] clientThreads = getClientConnections();
@@ -617,15 +622,18 @@ public class ServerClass extends AbstractServer {
             }
         }
         sb.append(":");
+        return targetPlayer;
+    }
+}
 
-        ArrayList<User> players = game.getPlayers();
+ /*       ArrayList<User> players = game.getPlayers();
         for (User player : players) {
             sb.append(player.getUsername()).append(",")
                     .append(player.getBalance()).append(",")
                     .append(player.getCurrentBet()).append(",")
                     .append(player.isActive());
 
-            if (player.getUsername().equals(targetPlayer)) {
+          if (player.getUsername().equals(targetPlayer)) {
                 ArrayList<CardClass> playerCards = player.getHand().getCards();
                 sb.append(",").append(playerCards.size());
                 for (CardClass card : playerCards) {
@@ -639,9 +647,11 @@ public class ServerClass extends AbstractServer {
         }
         return sb.toString();
     }
+   */ // -- I dont understand how you're trying to implement player.getHand().getCards();
+        // Finds which game a player is currently in
 
-    // Finds which game a player is currently in
-    private Game findGameForPlayer(String username) {
+   /*
+        private Game findGameForPlayer(String username) {
         for (Game game : activeGames) {
             for (User player : game.getPlayers()) {
                 if (player.getUsername().equals(username)) {
@@ -651,4 +661,5 @@ public class ServerClass extends AbstractServer {
         }
         return null;
     }
-}
+
+    */

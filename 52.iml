@@ -16,5 +16,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="ojdbc11" level="project" />
+    <orderEntry type="library" name="ocsf" level="project" />
   </component>
 </module>

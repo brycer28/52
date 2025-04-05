@@ -1,5 +1,5 @@
 package Client;
-import ocsf.server.ConnectiontoClient;
+import ocsf.server.ConnectionToClient;
 
 public class CurrentClient {
     private long clientId;
@@ -7,7 +7,7 @@ public class CurrentClient {
     private int balance;
     private boolean authenticated;
     private String activity;
-    private ConnectiontoClient client;
+    private ConnectionToClient client;
 
     public CurrentClient(long clientId, String username, int balance, boolean authenticated, String activity) {
         this.clientId = clientId;
@@ -18,7 +18,7 @@ public class CurrentClient {
 
     }
 
-    public ConnectiontoClient getClient() {
+    public ConnectionToClient getClient() {
         return client;
     }
 
