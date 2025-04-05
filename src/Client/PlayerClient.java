@@ -10,10 +10,9 @@ import AccountFiles.LoginControl;
 import ocsf.client.AbstractClient;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.function.Consumer;
 import java.io.IOException;
 
@@ -30,34 +29,11 @@ public class PlayerClient extends AbstractClient{
     private Map<String, Consumer<Message>> messageHandlers;
     private String serverName;
     private MainGameFrame mainGameFrame;
-  //  private GamePanel gamePanel;
 
-    // cali making edits:
-    // may want to put this in lobbycontrol?
-  //  private MainGameFrame mainGameFrame;
 
-    public void handleJoinGame(Event e) {
-        // Retrieve the selected game room from the LobbyPanel
-        String selectedRoom = mainGameFrame.getLobbyPanel().getSelectedGameRoom();
-        // Check if a room was actually selected
-        if (selectedRoom == null || selectedRoom.isEmpty()) {
-            // Notify the user to select a room
-            JOptionPane.showMessageDialog(mainGameFrame, "Please select a game room to join.");
-            return;
-        }
-    }
-        /* Attempt to join the selected game room through the model (or via a server call)
-boolean joined = TexasHoldem.joinRoom(selectedRoom); // Assume joinRoom returns a boolean
 
-        if (joined) {
-            // If joining was successful, switch to the GamePlayPanel in the view
-            mainGameFrame.setPanel("GamePlay");
-        } else {
-            // Otherwise, display an error message
-            JOptionPane.showMessageDialog(mainGameFrame, "Failed to join room: " + selectedRoom);
-        }
-    } */
-    // ----- cali done
+
+
 
     public PlayerClient(String host, int port) throws IOException {
         super(host, port);
@@ -65,6 +41,31 @@ boolean joined = TexasHoldem.joinRoom(selectedRoom); // Assume joinRoom returns 
         this.messageHandlers = new HashMap<>();
         this.serverName = "unknown server";
 
+    }
+
+    public void handleJoinGame(ActionEvent e, String selectedRoom) {
+        // Check if a room was actually selected
+        if (selectedRoom == null || selectedRoom.isEmpty()) {
+            // Notify the user to select a room using the main frame as the parent for the dialog
+            JOptionPane.showMessageDialog(mainGameFrame, "Please select a game room to join.");
+            return;
+        }
+
+        // Create a join room message using your inner Message class
+        Message joinMessage = new Message("joinRoom", selectedRoom);
+        try {
+            // Attempt to send the join room message to the server
+            sendToServer(joinMessage);
+            System.out.println("Join room message sent for: " + selectedRoom);
+            mainGameFrame.setPanel("gamePlay");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(mainGameFrame, "Failed to send join room request for: " + selectedRoom);
+            return;
+        }
+
+        // Assuming the join request is successful, switch the UI to the GamePlay panel.
+        mainGameFrame.setPanel("GamePlay");
     }
 
     @Override
@@ -110,6 +111,25 @@ boolean joined = TexasHoldem.joinRoom(selectedRoom); // Assume joinRoom returns 
 
     public String getUsername() {
         return username;
+    }
+
+    public void setMainGameFrame(MainGameFrame mainFrame) {
+        this.mainGameFrame = mainFrame;
+    }
+
+    public void handleCreateGame(ActionEvent e) {
+
+            // Generate a sample room name.
+            String newGameRoom = "Room " + (char) ('D' + (int) (Math.random() * 3));
+
+            // Use mainGameFrame as the parent for the message dialog.
+            JOptionPane.showMessageDialog(mainGameFrame, "Create Game action triggered. New room: " + newGameRoom);
+
+            // Update the lobby panel's room list via the mainGameFrame.
+            mainGameFrame.getLobbyPanel().updateGameRooms(Arrays.asList(newGameRoom, "Room X", "Room Y"));
+
+            System.out.println("Server (dummy) would broadcast a new game list including " + newGameRoom);
+
     }
 
     // Skeleton Message class to get rid of errors

@@ -1,4 +1,6 @@
-package graphics.panels;
+package graphics.panels.test;
+
+import graphics.panels.LobbyPanel;
 
 import javax.swing.*;
 import java.awt.*;
