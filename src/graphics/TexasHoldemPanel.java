@@ -1,5 +1,6 @@
 package graphics;
 
+import graphics.panels.gameplay.CardPanel;
 import logic.TexasHoldem;
 
 import javax.swing.*;
@@ -7,7 +8,6 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-import logic.*;
 import cards.*;
 
 public class TexasHoldemPanel extends JPanel {

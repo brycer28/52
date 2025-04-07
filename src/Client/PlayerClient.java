@@ -17,16 +17,16 @@ public class PlayerClient extends AbstractClient{
     private LoginControl loginControl;
     private CreateAccountControl createAccountControl;
     private GameClient gameclient;
-    private LobbyControl lobbyControl;
-    private User currentUser;
+    //private LobbyControl lobbyControl;
+    private AccountFiles.User currentUser;
     private JPanel container;
-    private List<User> players;
+    private List<AccountFiles.User> players;
     private String username;
     private Map<String, Consumer<Message>> messageHandlers;
     private String serverName;
     private GamePanel gamePanel;
 
-    public PlayerClient(string host, int port) throws IOException {
+    public PlayerClient(String host, int port) throws IOException {
         super(host, port);
         this.players = new ArrayList<>();
         this.messageHandlers = new HashMap<>();
