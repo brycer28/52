@@ -1,8 +1,7 @@
 package logic;
 
-import graphics.TexasHoldemPanel;
 import cards.*;
-
+import graphics.TexasHoldemPanel;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
@@ -209,37 +208,74 @@ public class TexasHoldem {
     }
 
     public void determineWinner() {
+        // add each community card
         for (Card card : communityCards) {
             playerHand.add(card);
             dealerHand.add(card);
         }
 
+        // get the value of each hand
         Hand.HandValue playerHandValue = playerHand.evaluateHand();
         Hand.HandValue dealerHandValue = dealerHand.evaluateHand();
 
+        // booleans for which player wins
+        boolean playerWins = false;
+        boolean dealerWins = false;
+
+        // if a player has higher hand, they win
         if (playerHandValue.ordinal() > dealerHandValue.ordinal()) {
+            playerWins = true;
+
+        // if dealer has higher hand, they win
+        } else if (playerHandValue.ordinal() < dealerHandValue.ordinal()) {
+            dealerWins = true;
+            
+        // if player and dealer have equal ordinal values, they tie
+        // must resolve tie to determine winner
+        } else {
+            // set to Object becasue it could be either a Suit or a Rank depending on the hand
+            Object playerBestCard = playerHand.determineTieBreaker();
+            Object dealerBestCard = dealerHand.determineTieBreaker();
+
+            // if player and dealer best cards are not same type, tie did not occur
+            if (playerBestCard.getClass() != dealerBestCard.getClass()) {
+                System.out.println("ERROR: Player and Dealer best cards are not of same type!");
+                throw new RuntimeException();
+            }  
+            
+            if (playerBestCard instanceof Card.Suit) {
+                Card.Suit playerSuit = (Card.Suit) playerBestCard;
+                Card.Suit dealerSuit = (Card.Suit) dealerBestCard;
+
+                if (playerSuit.ordinal() > dealerSuit.ordinal()) {
+                    playerWins = true;
+                } else if (playerSuit.ordinal() < dealerSuit.ordinal()) {
+                    dealerWins = true;
+                }
+
+            } else if (playerBestCard instanceof Card.Rank) {
+                Card.Rank playerRank = (Card.Rank) playerBestCard;
+                Card.Rank dealerRank = (Card.Rank) dealerBestCard;
+
+                if (playerRank.ordinal() > dealerRank.ordinal()) {
+                    playerWins = true;
+                } else if (playerRank.ordinal() < dealerRank.ordinal()) {
+                    dealerWins = true;
+                }
+            }
+        }
+
+        if (playerWins) {
             playerChips += pot;
             dealerChips -= currentBet;
             GUI.displayWinner(true);
-        } else if (playerHandValue.ordinal() < dealerHandValue.ordinal()) {
+        } else if (dealerWins) {
             dealerChips += pot;
             playerChips -= currentBet;
             GUI.displayWinner(false);
         } else {
-            Object playerBestCard = playerHand.determineTieBreaker();
-            Object dealerBestCard = dealerHand.determineTieBreaker();
-
-            if (playerBestCard instanceof Card.Suit) {
-
-
-
-
-            }
-
-
-
             System.out.println("NO WINNER");
-        }
+        } 
 
         GUI.showDealerHand();
     }
