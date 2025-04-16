@@ -36,13 +36,13 @@ public class GameClient extends AbstractClient {
     @Override
     protected void handleMessageFromServer(Object serverMessage) {
 
-        if (serverMessage instanceof String) {
-            String message = (String) serverMessage;
-
+        if (serverMessage instanceof String message) {
             if (message.equals("login=successful"))
                 loginControl.success();
-        }
 
+            else if (message.equals("createAccount=successful"))
+                createControl.createAccountSuccess();
+        }
     }
 
     @Override

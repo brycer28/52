@@ -65,6 +65,7 @@ public class Database
 //            return false;
     }
 
+
     public boolean createNewAccount(String username, String password)
     {
         // Read the database file.

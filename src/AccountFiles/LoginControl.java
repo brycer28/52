@@ -28,7 +28,7 @@ public class LoginControl {
             LoginPanel loginPanel = (LoginPanel)container.getComponent(2);
             LoginData data = new LoginData(loginPanel.getUsername(), loginPanel.getPassword());
 
-            if (data.getUsername().equals("") || data.getPassword().equals("")) {
+            if (data.getUsername().isBlank() || data.getPassword().isBlank()) {
                 JOptionPane.showMessageDialog(null, "Username and Password must not be empty");
                 return;
             }

@@ -30,7 +30,7 @@ public class LoginPanel extends JPanel {
 
         username = new JTextField(15);
         passwordField = new JPasswordField(15);
-        submitButton = new JButton("Create Account");
+        submitButton = new JButton("Login");
         cancelButton = new JButton("Cancel");
         // adds username label and field
         gbc.gridx = 0;
@@ -44,11 +44,7 @@ public class LoginPanel extends JPanel {
         add(new JLabel("Password:"), gbc);
         gbc.gridx = 1;
         add(passwordField, gbc);
-        // adds confirm password label and field
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        add(new JLabel("Confirm Password:"), gbc);
-        gbc.gridx = 1;
+
         // creating submit and cancel buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(submitButton);

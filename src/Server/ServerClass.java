@@ -70,17 +70,21 @@ public class ServerClass extends AbstractServer {
         if (msg instanceof LoginData) {
             LoginData data = (LoginData) msg;
             boolean success = database.verifyAccount(data.getUsername(), data.getPassword());
+            String result;
+            if (success) {
+                result = "login=success";
+                User user = database.getUser(data.getUsername());
+                //client.sendToClient(new LoginData(success, user));
+                client.setInfo("username", user.getUsername());
+                updateClientInfo(client, user.getUsername(), user.getBalance());
+                updateClientActivity(client, "Online");
+                logToServer("User '" + data.getUsername() + "' logged in successfully");
+            } else {
+                result = "LoginFailed";
+                //client.sendToClient(new LoginData(false, null));
+            }
             try {
-                if (success) {
-                    User user = database.getUser(data.getUsername());
-                    client.sendToClient(new LoginData(success, user));
-                    client.setInfo("username", user.getUsername());
-                    updateClientInfo(client, user.getUsername(), user.getBalance());
-                    updateClientActivity(client, "Online");
-                    logToServer("User '" + data.getUsername() + "' logged in successfully");
-                } else {
-                    client.sendToClient(new LoginData(false, null));
-                }
+                client.sendToClient(result);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -89,12 +93,18 @@ public class ServerClass extends AbstractServer {
         // Handle account creation
         else if (msg instanceof CreateAccountData) {
             CreateAccountData data = (CreateAccountData) msg;
+            String result;
             boolean success = database.createNewAccount(data.getUsername(), data.getPassword());
+            if (success) {
+                result = "createAccount=success";
+                logToServer("New account created: " + data.getUsername());
+            }
+            else
+                result = "createAccountFailed";
+
             try {
-                client.sendToClient(new CreateAccountData(success));
-                if (success) {
-                    logToServer("New account created: " + data.getUsername());
-                }
+                client.sendToClient(result);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
