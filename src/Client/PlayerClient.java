@@ -2,29 +2,30 @@ package Client;
 
 import AccountFiles.CreateAccountControl;
 import AccountFiles.LoginControl;
+import AccountFiles.CreateAccountData;
+import AccountFiles.LoginData;
+import AccountFiles.User;
 import ocsf.client.AbstractClient;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.function.Consumer;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
-public class PlayerClient extends AbstractClient{
+public class PlayerClient extends AbstractClient {
     private LoginControl loginControl;
     private CreateAccountControl createAccountControl;
-    private GameClient gameclient;
-    //private LobbyControl lobbyControl;
-    private AccountFiles.User currentUser;
+    private GameClient gameClient;
+    private User currentUser;
     private JPanel container;
-    private List<AccountFiles.User> players;
+    private List<User> players;
     private String username;
-    private Map<String, Consumer<Message>> messageHandlers;
+    private Map<String, Consumer<String>> messageHandlers;
     private String serverName;
-    private GamePanel gamePanel;
 
     public PlayerClient(String host, int port) throws IOException {
         super(host, port);
@@ -35,7 +36,24 @@ public class PlayerClient extends AbstractClient{
 
     @Override
     protected void handleMessageFromServer(Object msg) {
-
+        if (msg instanceof LoginData loginData) {
+            if (loginData.isSuccess()) {
+                this.currentUser = loginData.getUser();
+                gameClient.loginSuccessful(currentUser);
+            } else {
+                JOptionPane.showMessageDialog(container, "Login failed. Please try again.");
+            }
+        } else if (msg instanceof CreateAccountData accountData) {
+            if (accountData.isSuccess()) {
+                JOptionPane.showMessageDialog(container, "Account created successfully. Please log in.");
+                gameClient.showLoginPanel();
+            } else {
+                JOptionPane.showMessageDialog(container, "Username already exists. Please choose another.");
+            }
+        } else if (msg instanceof String message) {
+            System.out.println("Received string message: " + message);
+            // Handle additional string-based server messages here if needed
+        }
     }
 
     public void setLoginControl(LoginControl loginControl) {
@@ -46,25 +64,24 @@ public class PlayerClient extends AbstractClient{
         this.createAccountControl = createAccountControl;
     }
 
-    public void setGameControl(GameControl gameControl) {
-        this.GameControl = gameControl;
-    }
-
-    public void setLobbyControl(LobbyControl lobbyControl) {
-        this.lobbyControl = lobbyControl;
+    public void setGameControl(GameClient gameClient) {
+        this.gameClient = gameClient;
     }
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
     }
 
+    public User getCurrentUser() {
+        return this.currentUser;
+    }
+
     public void setContainer(JPanel container) {
         this.container = container;
     }
 
-    private List<User> parsePlayersdata(String playersData) {
-
-
+    private List<User> parsePlayersData(String playersData) {
+        return new ArrayList<>(); // placeholder
     }
 
     public List<User> getPlayers() {
@@ -79,18 +96,8 @@ public class PlayerClient extends AbstractClient{
         return username;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
 
