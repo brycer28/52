@@ -14,11 +14,12 @@ import javax.swing.SwingUtilities;
 import java.util.HashMap;
 import java.util.Map;
 import java.net.InetAddress;
+import AccountFiles.*;
 
 public class ServerClass extends AbstractServer {
 
     // Main server data and tools
-    private DatabaseClass database;
+    private Database database;
     private ArrayList<Game> activeGames;
     private ChatServer chatServer;
     private JTextArea logArea;
@@ -39,7 +40,7 @@ public class ServerClass extends AbstractServer {
         chatServer = new ChatServer();
 
         try {
-            database = new DatabaseClass(); // connect to DB
+            database = new Database(); // connect to DB
         } catch (Exception e) {
             System.out.println("Warning: Database initialization failed. Running without database.");
             e.printStackTrace();

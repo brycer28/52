@@ -1,16 +1,13 @@
-package graphics;
+package graphics.panels.gameplay;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import cards.Card;
-import logic.*;
 
 public class CardPanel extends JPanel {
     private final String cardImagesPath = "src/cardImages/";
