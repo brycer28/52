@@ -17,7 +17,7 @@ public class Database
 
         //2. Open the db.properties with FileInputStrea
         try {
-            fis = new FileInputStream("lab7out/db.properties");
+            fis = new FileInputStream("Server/db.properties");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -64,7 +64,6 @@ public class Database
 //        else
 //            return false;
     }
-
 
     public boolean createNewAccount(String username, String password)
     {

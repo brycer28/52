@@ -23,6 +23,7 @@ public class ServerClass extends AbstractServer {
     private ArrayList<Game> activeGames;
     private ChatServer chatServer;
     private JTextArea logArea;
+    private int startingBalance = 100;
 
     // Track connected clients and game-related data
     private ArrayList<ConnectedClient> connectedClients = new ArrayList<>();
@@ -73,7 +74,8 @@ public class ServerClass extends AbstractServer {
             String result;
             if (success) {
                 result = "login=success";
-                User user = database.getUser(data.getUsername());
+                //User user = database.getUser(data.getUsername());
+                User user = new User(data.getUsername(), startingBalance);
                 //client.sendToClient(new LoginData(success, user));
                 client.setInfo("username", user.getUsername());
                 updateClientInfo(client, user.getUsername(), user.getBalance());
