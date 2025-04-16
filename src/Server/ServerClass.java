@@ -14,7 +14,6 @@ import javax.swing.SwingUtilities;
 import java.util.HashMap;
 import java.util.Map;
 import java.net.InetAddress;
-import AccountFiles.*;
 
 public class ServerClass extends AbstractServer {
 
@@ -69,11 +68,9 @@ public class ServerClass extends AbstractServer {
         // Handle login
         if (msg instanceof LoginData) {
             LoginData data = (LoginData) msg;
-            Object validate;
             boolean success = database.verifyAccount(data.getUsername(), data.getPassword());
             try {
                 if (success) {
-                    validate = "login=successful";
                     User user = database.getUser(data.getUsername());
                     client.sendToClient(new LoginData(success, user));
                     client.setInfo("username", user.getUsername());
