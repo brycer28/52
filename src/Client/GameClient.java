@@ -16,6 +16,8 @@ public class GameClient {
     private MainGameFrame mainFrame;
     private PlayerClient networkClient;
     private User currentUser;
+    private logic.TexasHoldem texasHoldemLogic;
+    private graphics.TexasHoldemPanel texasHoldemPanel;
 
     public GameClient(PlayerClient networkClient) {
         this.networkClient = networkClient;
@@ -23,7 +25,7 @@ public class GameClient {
 
         // Connect the network client to this controller
         this.networkClient.setGameControl(this);
-        this.networkClient.setContainer(mainFrame.getContentPane());
+        this.networkClient.setContainer((JPanel) mainFrame.getContentPane());
 
         // Set up control listeners (Login, Account creation, etc.)
         setUpControls();
@@ -38,8 +40,8 @@ public class GameClient {
     }
 
     private void setUpControls() {
-        LoginControl loginControl = new LoginControl(mainFrame.getContentPane());
-        CreateAccountControl createAccountControl = new CreateAccountControl();
+        LoginControl loginControl = new LoginControl((JPanel) mainFrame.getContentPane());
+        CreateAccountControl createAccountControl = new CreateAccountControl((JPanel) mainFrame.getContentPane());
 
         networkClient.setLoginControl(loginControl);
         networkClient.setCreateAccountControl(createAccountControl);
@@ -63,26 +65,14 @@ public class GameClient {
         mainFrame.setPanel("lobby");
     }
 
-    public void startTexasHoldem() {
-        TexasHoldem gameLogic = new TexasHoldem();
-        TexasHoldemPanel panel = gameLogic.getTexasHoldemPanel();
-        mainFrame.getContentPane().add(panel, "texasHoldem");
-        mainFrame.setPanel("texasHoldem");
-    }
-
     public void sendToServer(Object message) {
         try {
             networkClient.sendToServer(message);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(mainFrame, "Failed to send message to server.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    public PlayerClient getNetworkClient() {
-        return networkClient;
-    }
 }
+

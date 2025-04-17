@@ -35,10 +35,11 @@ public class LoginControl {
 
             try {
                 client.sendToServer(data);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
+                e.printStackTrace(); // Optional: helps with debugging if something goes wrong
             }
-            catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Something went wrong. Please try again");
-            }
+
         }
     }
 
