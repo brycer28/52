@@ -1,9 +1,8 @@
 package cards;
 
+import cards.Card.Rank;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import cards.Card.*;
 
 public class Hand extends ArrayList<Card> {
     public enum HandValue {
@@ -15,19 +14,6 @@ public class Hand extends ArrayList<Card> {
     public int getHandValue() {
         int handValue = 0;
         int aceCount = 0;
-
-//        for (Card c : this) {
-//            if (c.getRank() == Card.Rank.ACE) {
-//                handValue += 11;
-//                aceCount++;
-//                break;
-//            }
-//            else if (c.getRank() == Card.Rank.JACK || c.getRank() == Card.Rank.QUEEN || c.getRank() == Card.Rank.KING) {
-//                handValue += 10;
-//            } else {
-//                handValue += c.getRank().ordinal() + 2;
-//            }
-//        }
 
         for (Card card : this) {
             switch (card.getRank()) {
@@ -54,21 +40,28 @@ public class Hand extends ArrayList<Card> {
         deck.pop();
     }
 
+    // determine tie breaker in the event that 2 players have the same HandType
+    // helper methods return the highest rank of a hand or the suit used to make a hand to 
+    // more specifically determine ties
+    // ex. - P1 (10C, 10H, 4H, KS, 8D), P2 (8H, 8D, 4C, AD, JC) -> P1 wins b/c 10 pair > 8 pair
     public Object determineTieBreaker() {
-        HandValue handValue = evaluateHand();
+        switch (this.evaluateHand()) {
+            case HandValue.ROYAL_FLUSH: return isRoyalFlush();
+            case HandValue.STRAIGHT_FLUSH: return isStraightFlush();
+            case HandValue.FOUR_OF_A_KIND: return isFourOfAKind();
+            case HandValue.FULL_HOUSE: return isFullHouse();
+            case HandValue.FLUSH: return isFlush();
+            case HandValue.STRAIGHT: return isStraight();
+            case HandValue.THREE_OF_A_KIND: return isThreeOfAKind();
+            case HandValue.TWO_PAIR: return isTwoPair();
+            case HandValue.PAIR: return isPair();
+            case HandValue.HIGH_CARD: return isHighCard();
+        }
 
-        if (handValue == HandValue.ROYAL_FLUSH) return isRoyalFlush();
-        else if (handValue == HandValue.STRAIGHT_FLUSH) return isStraightFlush();
-        else if (handValue == HandValue.FOUR_OF_A_KIND) return isFourOfAKind();
-        else if (handValue == HandValue.FULL_HOUSE) return isFullHouse();
-        else if (handValue == HandValue.FLUSH) return isFlush();
-        else if (handValue == HandValue.STRAIGHT) return isStraight();
-        else if (handValue == HandValue.THREE_OF_A_KIND) return isThreeOfAKind();
-        else if (handValue == HandValue.TWO_PAIR) return isTwoPair();
-        else if (handValue == HandValue.PAIR) return isPair();
-        else return isHighCard();
+        return null;
     }
 
+    // return the HandType of a given hand if it matches criteria in helper function
     public HandValue evaluateHand() {
         if (isRoyalFlush() != null) return HandValue.ROYAL_FLUSH;
         else if (isStraightFlush() != null) return HandValue.STRAIGHT_FLUSH;
@@ -81,8 +74,6 @@ public class Hand extends ArrayList<Card> {
         else if (isPair() != null) return HandValue.PAIR;
         else return HandValue.HIGH_CARD;
     }
-
-
 
     public Card.Suit isRoyalFlush() {
         if (this.isStraight() == null || this.isFlush() == null ) {
@@ -99,7 +90,7 @@ public class Hand extends ArrayList<Card> {
                 .collect(Collectors.toCollection(Hand::new));
 
         List<Card.Rank> royalStraight = Arrays.asList(
-                Card.Rank.TEN, Card.Rank.JACK, Card.Rank.QUEEN, Card.Rank.QUEEN, Card.Rank.KING, Card.Rank.ACE);
+                Card.Rank.TEN, Card.Rank.JACK, Card.Rank.QUEEN, Card.Rank.KING, Card.Rank.ACE);
 
         List<Card.Rank> flushSuitOnlyRanks = flushSuitOnly.stream()
                 .map(Card::getRank)
@@ -192,43 +183,35 @@ public class Hand extends ArrayList<Card> {
                 .sorted((r1, r2) -> Integer.compare(r1.ordinal(), r2.ordinal()))
                 .toList();
 
+        // check for regular straights (non ace-low)
+        for (int i = 0; i <= sortedRanks.size() - 5; i++) {
+            boolean isStraight = true;
+
+            for (int j = 0; j < 4; j++) {
+                int curr = sortedRanks.get(i + j).ordinal();
+                int next = sortedRanks.get(i + j + 1).ordinal();
+
+                if (next != curr + 1) {
+                    isStraight = false;
+                    break;
+                }
+            }
+            
+            if (isStraight) {
+                // return highest rank in the straight
+                return sortedRanks.get(i + 4);
+            }
+        }
+
+        // check for an ace-low straight
+        Set<Card.Rank> aceLowStraight = Set.of(Card.Rank.ACE, Card.Rank.TWO, Card.Rank.THREE, Card.Rank.FOUR, Card.Rank.FIVE);
+        if (uniqueRanks.containsAll(aceLowStraight)) {
+            // return a 5 (highest value of an ace low straight)
+            return Card.Rank.FIVE;
+        }
 
         return null;
     }
-
-//    // helper method for isStraight, checks if first 5 elements of a subarray are consecutive
-//    public static boolean hasFiveConsecutive(List<Card> hand) {
-//        if (hand.size() != 5) {
-//            return false;
-//        }
-//
-//        // cast to a set to check for duplicates
-//        Set<Card.Rank> uniqueRanks = new HashSet<>();
-//        for (Card card : hand) {
-//            uniqueRanks.add(card.getRank());
-//        }
-//
-//        if (uniqueRanks.size() < 5) {
-//            return false;
-//        }
-//
-//        // sort unique ranks into sorted lists
-//        List<Card.Rank> sortedRanks = new ArrayList<>(uniqueRanks);
-//        Collections.sort(sortedRanks);
-//
-//        for (int i = 0; i < 4; i++) {
-//            int currentRank = sortedRanks.get(i).ordinal();
-//            int nextRank = sortedRanks.get(i + 1).ordinal();
-//
-//            if (nextRank != currentRank + 1) {
-//                // special case for checking ace (can be 1 or 14)
-//                if (!(currentRank == 12 && nextRank == 0)) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
 
     public Card.Rank isThreeOfAKind() {
         Map<Card.Rank, Long> rankCount = this.stream()
@@ -253,7 +236,7 @@ public class Hand extends ArrayList<Card> {
                 .toList();
 
         if (pairRanks.size() >= 2) {
-            return pairRanks.getFirst();
+            return pairRanks.getLast();
         }
         return null;
     }
