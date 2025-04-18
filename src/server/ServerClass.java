@@ -5,7 +5,6 @@ import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.PreparedStatement;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +15,6 @@ import account.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.net.InetAddress;
 
 public class ServerClass extends AbstractServer {
 
@@ -339,7 +337,7 @@ public class ServerClass extends AbstractServer {
                 client
         );
         connectedClients.add(newClient);
-        logToServer("Client " + client.getId() + " connected");
+        logToServer("client " + client.getId() + " connected");
 
         try {
             client.sendToClient("SERVER_NAME:" + this.serverName);
@@ -352,7 +350,7 @@ public class ServerClass extends AbstractServer {
     @Override
     protected void clientDisconnected(ConnectionToClient client) {
         connectedClients.removeIf(c -> c.getClientId() == client.getId());
-        logToServer("Client " + client.getId() + " disconnected");
+        logToServer("client " + client.getId() + " disconnected");
     }
 
     // Updates stored client info (username, balance, etc.)
