@@ -1,11 +1,13 @@
 package graphics.panels.test;
 
 import javax.swing.*;
+
+import client.PlayerClient;
+
 import java.util.Arrays;
 
 import graphics.MainGameFrame;
 import graphics.panels.LobbyPanel;
-import Client.PlayerClient;
 
 /**
  * IntegratedMainGameFrameTest demonstrates the integrated setup of the UI with its controller.

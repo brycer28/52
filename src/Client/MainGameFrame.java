@@ -1,4 +1,4 @@
-package Client;
+package client;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +23,8 @@ public class MainGameFrame extends JFrame {
         cardPanel = new JPanel(cardLayout);
 
         // Create and add your panels
-        loginPanel = new AccountFiles.LoginPanel();                     // assuming you have these classes
-        accountCreationPanel = new AccountFiles.CreateAccountPanel();
+        loginPanel = new account.LoginPanel();                     // assuming you have these classes
+        accountCreationPanel = new account.CreateAccountPanel();
         //lobbyPanel = new LobbyPanel();
         //gamePlayPanel = new TexasHoldemPanel();              // or whatever your gameplay panel is
         //statsPanel = new StatsPanel();

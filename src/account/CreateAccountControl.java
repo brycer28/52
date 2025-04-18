@@ -1,11 +1,9 @@
-package AccountFiles;
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.CardLayout;
-import java.io.IOException;
+package account;
 
-import Client.*;
+import client.*;
+import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
+import javax.swing.*;
 
 public class CreateAccountControl{
     private JPanel container;

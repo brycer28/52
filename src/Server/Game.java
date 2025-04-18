@@ -1,7 +1,7 @@
-package Server;
+package server;
 
-import AccountFiles.User;
-
+import account.User;
+import cards.Card;
 import java.util.ArrayList;
 
 public class Game {

@@ -1,15 +1,18 @@
 package graphics.panels.test;
 
 import javax.swing.*;
+
+import client.CurrentClient;
+import client.GameClient;
+import client.PlayerClient;
+
 import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
-import Client.PlayerClient;
-import Client.GameClient;
-import Client.CurrentClient;
+
 import graphics.panels.LobbyPanel;
 import logic.TexasHoldem;
-import Server.ServerClass;
+import server.ServerClass;
 
 /**
  * IntegratedLobbyPanelTest demonstrates how the LobbyPanel

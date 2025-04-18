@@ -1,4 +1,4 @@
-package Server;
+package server;
 /*
  * GameServer handles client connections, tracks login status,
  * and updates the server GUI with the number of authenticated and unauthenticated users.

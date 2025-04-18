@@ -1,6 +1,6 @@
-package Server;
+package server;
 
-import AccountFiles.User;
+import account.User;
 
 public class DatabaseClass {
 

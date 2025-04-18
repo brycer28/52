@@ -1,4 +1,4 @@
-package Server;
+package server;
 /*
  * ServerFinder sends a UDP broadcast to find nearby poker servers
  * and returns a list of discovered servers.

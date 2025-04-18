@@ -1,9 +1,11 @@
-package Client;
+package client;
 
-import AccountFiles.*;
 import graphics.*;
 
 import javax.swing.*;
+
+import account.*;
+
 import java.io.IOException;
 import java.util.List;
 

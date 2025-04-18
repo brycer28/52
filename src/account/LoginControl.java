@@ -1,10 +1,12 @@
-package AccountFiles;
+package account;
 
 import javax.swing.*;
+
+import client.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import Client.*;
 
 public class LoginControl {
 

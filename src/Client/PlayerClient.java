@@ -1,4 +1,4 @@
-package Client;
+package client;
 
 import AccountFiles.User;
 import Client.controllers.GameControl;

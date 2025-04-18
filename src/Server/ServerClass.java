@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 // Import required libraries and OCSF server classes
 import ocsf.server.AbstractServer;
@@ -11,10 +11,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+
+import account.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.net.InetAddress;
-import AccountFiles.*;
 
 public class ServerClass extends AbstractServer {
 

@@ -232,13 +232,6 @@ public class Hand extends ArrayList<Card> {
             }
         }
 
-        // check for an ace-low straight
-        Set<Card.Rank> aceLowStraight = Set.of(Card.Rank.ACE, Card.Rank.TWO, Card.Rank.THREE, Card.Rank.FOUR, Card.Rank.FIVE);
-        if (uniqueRanks.containsAll(aceLowStraight)) {
-            // return a 5 (highest value of an ace low straight)
-            return Card.Rank.FIVE;
-        }
-
         return null;
     }
 

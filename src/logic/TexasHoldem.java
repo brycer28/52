@@ -1,11 +1,12 @@
 package logic;
 
-import AccountFiles.User;
 import cards.*;
 import cards.Hand.HandValue;
 import graphics.TexasHoldemPanel;
 import java.util.*;
 import java.util.concurrent.*;
+
+import account.User;
 
 public class TexasHoldem {
     private TexasHoldemPanel GUI;

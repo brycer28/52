@@ -1,4 +1,4 @@
-package AccountFiles;
+package account;
 
 import cards.Card;
 import cards.Hand;

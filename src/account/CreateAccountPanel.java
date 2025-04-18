@@ -1,36 +1,24 @@
-package AccountFiles;
+package account;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
-public class LoginPanel extends JPanel {
 
-    private JLabel errorLabel;
+public class CreateAccountPanel extends JPanel {
     private JTextField username;
     private JPasswordField passwordField;
+    private JPasswordField confirmPasswordField;
     private JButton submitButton;
     private JButton cancelButton;
 
-    public String getUsername() {
-        return username.getText();
-    }
-
-    public String getPassword() {
-        return passwordField.getText();
-    }
-
-    public void setError(String error) {
-        errorLabel.setText(error);
-    }
-
-    public LoginPanel() {
-
+    public CreateAccountPanel() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         username = new JTextField(15);
         passwordField = new JPasswordField(15);
-        submitButton = new JButton("Login");
+        confirmPasswordField = new JPasswordField(15);
+        submitButton = new JButton("Create Account");
         cancelButton = new JButton("Cancel");
         // adds username label and field
         gbc.gridx = 0;
@@ -44,7 +32,12 @@ public class LoginPanel extends JPanel {
         add(new JLabel("Password:"), gbc);
         gbc.gridx = 1;
         add(passwordField, gbc);
-
+        // adds confirm password label and field
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(new JLabel("Confirm Password:"), gbc);
+        gbc.gridx = 1;
+        add(confirmPasswordField, gbc);
         // creating submit and cancel buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(submitButton);
@@ -55,6 +48,26 @@ public class LoginPanel extends JPanel {
         gbc.gridwidth = 2;
         add(buttonPanel, gbc);
 
+
     }
 
+    public String getUsername() {
+        return username.getText();
+    }
+
+    public String getPassword() {
+        return new String(passwordField.getPassword());
+    }
+
+    public String getConfirmPassword() {
+        return new String(confirmPasswordField.getPassword());
+    }
+
+    public JButton getSubmitButton() {
+        return submitButton;
+    }
+
+    public JButton getCancelButton() {
+        return cancelButton;
+    }
 }

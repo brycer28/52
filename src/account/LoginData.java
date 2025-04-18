@@ -1,30 +1,28 @@
-package AccountFiles;
+package account;
 
-import java.io.Serializable;
-
-public class CreateAccountData implements Serializable {
+public class LoginData {
     private String username;
     private String password;
     private boolean success;
+    private User user;
 
-    public CreateAccountData(String username, String password) {
+    public LoginData(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public CreateAccountData(boolean success) {
+    public LoginData(boolean success, User user) {
         this.success = success;
+        this.user = user;
     }
 
     public String getUsername() {
         return username;
     }
-
     public String getPassword() {
         return password;
     }
+    public User getUser() {return user;}
+    public boolean isSuccess() {return success;}
 
-    public boolean isSuccess() {
-        return success;
-    }
 }
