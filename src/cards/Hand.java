@@ -93,7 +93,6 @@ public class Hand extends ArrayList<Card> {
 
         List<Card.Rank> royalStraight = Arrays.asList(
                 Card.Rank.TEN, Card.Rank.JACK, Card.Rank.QUEEN, Card.Rank.KING, Card.Rank.ACE);
-                Card.Rank.TEN, Card.Rank.JACK, Card.Rank.QUEEN, Card.Rank.KING, Card.Rank.ACE);
 
         List<Card.Rank> flushSuitOnlyRanks = flushSuitOnly.stream()
                 .map(Card::getRank)
