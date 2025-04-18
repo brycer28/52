@@ -1,5 +1,6 @@
 package AccountFiles;
 
+import cards.Card;
 import cards.Hand;
 
 public class User implements java.io.Serializable {
