@@ -1,6 +1,7 @@
 package cards;
 
 import cards.Card.Rank;
+import cards.Card.Rank;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ public class Hand extends ArrayList<Card> {
         STRAIGHT_FLUSH, ROYAL_FLUSH
     }
 
+    // return ordinal value of hand value
     public int getHandValue() {
         int handValue = 0;
         int aceCount = 0;
@@ -20,6 +22,7 @@ public class Hand extends ArrayList<Card> {
             switch (card.getRank()) {
                 case ACE: {
                     handValue += 11;
+                    aceCount++;
                     aceCount++;
                     break;
                 }
@@ -41,6 +44,9 @@ public class Hand extends ArrayList<Card> {
         deck.pop();
     }
 
+    // called to resolve 2 hands being the same HandType
+    // each helper method returns the needed card to resolve a tie
+    // isFlush() returns a Suit object, isTwoPair() returns the highest value pair
     public Object determineTieBreaker() {
         switch (this.evaluateHand()) {
             case HandValue.ROYAL_FLUSH: return isRoyalFlush();
@@ -71,7 +77,6 @@ public class Hand extends ArrayList<Card> {
     }
 
 
-
     public Card.Suit isRoyalFlush() {
         if (this.isStraight() == null || this.isFlush() == null ) {
             return null;
@@ -87,6 +92,7 @@ public class Hand extends ArrayList<Card> {
                 .collect(Collectors.toCollection(Hand::new));
 
         List<Card.Rank> royalStraight = Arrays.asList(
+                Card.Rank.TEN, Card.Rank.JACK, Card.Rank.QUEEN, Card.Rank.KING, Card.Rank.ACE);
                 Card.Rank.TEN, Card.Rank.JACK, Card.Rank.QUEEN, Card.Rank.KING, Card.Rank.ACE);
 
         List<Card.Rank> flushSuitOnlyRanks = flushSuitOnly.stream()
@@ -206,6 +212,32 @@ public class Hand extends ArrayList<Card> {
             // return a 5 (highest value of an ace low straight)
             return Card.Rank.FIVE;
         }
+        // check for regular straights (non-ace low)
+        for (int i = 0; i <= sortedRanks.size() -5; i++) {
+            boolean isStraight = true;
+
+            for (int j = 0; j < 4; j++) {
+                int curr = sortedRanks.get(i + j).ordinal();
+                int next = sortedRanks.get(i + j + 1).ordinal();
+
+                if (next != curr + 1) {
+                    isStraight = false;
+                    break;
+                }
+            }
+            
+            if (isStraight) {
+                // return highest rank in the straight
+                return sortedRanks.get(i + 4);
+            }
+        }
+
+        // check for an ace-low straight
+        Set<Card.Rank> aceLowStraight = Set.of(Card.Rank.ACE, Card.Rank.TWO, Card.Rank.THREE, Card.Rank.FOUR, Card.Rank.FIVE);
+        if (uniqueRanks.containsAll(aceLowStraight)) {
+            // return a 5 (highest value of an ace low straight)
+            return Card.Rank.FIVE;
+        }
 
         return null;
     }
@@ -233,7 +265,7 @@ public class Hand extends ArrayList<Card> {
                 .toList();
 
         if (pairRanks.size() >= 2) {
-            return pairRanks.getFirst();
+            return pairRanks.getLast();
         }
         return null;
     }
