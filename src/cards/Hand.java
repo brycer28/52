@@ -11,15 +11,18 @@ public class Hand extends ArrayList<Card> {
         STRAIGHT_FLUSH, ROYAL_FLUSH
     }
 
+    // return ordinal value of hand value
     public int getHandValue() {
         int handValue = 0;
         int aceCount = 0;
+
 
         for (Card card : this) {
             switch (card.getRank()) {
                 case ACE: {
                     handValue += 11;
-                    aceCount ++;
+                    aceCount++;
+                    aceCount++;
                     break;
                 }
                 case Rank.TEN: case Rank.JACK: case Rank.QUEEN: case Rank.KING: {
@@ -57,7 +60,6 @@ public class Hand extends ArrayList<Card> {
             case HandValue.PAIR: return isPair();
             case HandValue.HIGH_CARD: return isHighCard();
         }
-
         return null;
     }
 
@@ -183,8 +185,35 @@ public class Hand extends ArrayList<Card> {
                 .sorted((r1, r2) -> Integer.compare(r1.ordinal(), r2.ordinal()))
                 .toList();
 
-        // check for regular straights (non ace-low)
-        for (int i = 0; i <= sortedRanks.size() - 5; i++) {
+        // check for regular straights (non-ace low)
+        for (int i = 0; i <= sortedRanks.size() -5; i++) {
+            boolean isStraight = true;
+
+            for (int j = 0; j < 4; j++) {
+                int curr = sortedRanks.get(i + j).ordinal();
+                int next = sortedRanks.get(i + j + 1).ordinal();
+
+                if (next != curr + 1) {
+                    isStraight = false;
+                    break;
+                }
+            }
+            
+            if (isStraight) {
+                // return highest rank in the straight
+                return sortedRanks.get(i + 4);
+            }
+        }
+
+        // check for an ace-low straight
+        Set<Card.Rank> aceLowStraight = Set.of(Card.Rank.ACE, Card.Rank.TWO, Card.Rank.THREE, Card.Rank.FOUR, Card.Rank.FIVE);
+        if (uniqueRanks.containsAll(aceLowStraight)) {
+            // return a 5 (highest value of an ace low straight)
+            return Card.Rank.FIVE;
+        }
+        // check for regular straights (non-ace low)
+        for (int i = 0; i <= sortedRanks.size() -5; i++) {
+
             boolean isStraight = true;
 
             for (int j = 0; j < 4; j++) {
