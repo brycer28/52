@@ -26,6 +26,10 @@ public class User implements java.io.Serializable {
         return hand;
     }
 
+    public void appendHand(Card c) {
+        this.hand.add(c);
+    }
+
     public int getBalance() {
         return balance;
     }
