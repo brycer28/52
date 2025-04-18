@@ -1,7 +1,6 @@
 package cards;
 
 import cards.Card.Rank;
-import cards.Card.Rank;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,9 +43,10 @@ public class Hand extends ArrayList<Card> {
         deck.pop();
     }
 
-    // called to resolve 2 hands being the same HandType
-    // each helper method returns the needed card to resolve a tie
-    // isFlush() returns a Suit object, isTwoPair() returns the highest value pair
+    // determine tie breaker in the event that 2 players have the same HandType
+    // helper methods return the highest rank of a hand or the suit used to make a hand to 
+    // more specifically determine ties
+    // ex. - P1 (10C, 10H, 4H, KS, 8D), P2 (8H, 8D, 4C, AD, JC) -> P1 wins b/c 10 pair > 8 pair
     public Object determineTieBreaker() {
         switch (this.evaluateHand()) {
             case HandValue.ROYAL_FLUSH: return isRoyalFlush();
@@ -63,6 +63,7 @@ public class Hand extends ArrayList<Card> {
         return null;
     }
 
+    // return the HandType of a given hand if it matches criteria in helper function
     public HandValue evaluateHand() {
         if (isRoyalFlush() != null) return HandValue.ROYAL_FLUSH;
         else if (isStraightFlush() != null) return HandValue.STRAIGHT_FLUSH;
@@ -75,7 +76,6 @@ public class Hand extends ArrayList<Card> {
         else if (isPair() != null) return HandValue.PAIR;
         else return HandValue.HIGH_CARD;
     }
-
 
     public Card.Suit isRoyalFlush() {
         if (this.isStraight() == null || this.isFlush() == null ) {
@@ -213,6 +213,7 @@ public class Hand extends ArrayList<Card> {
         }
         // check for regular straights (non-ace low)
         for (int i = 0; i <= sortedRanks.size() -5; i++) {
+
             boolean isStraight = true;
 
             for (int j = 0; j < 4; j++) {
