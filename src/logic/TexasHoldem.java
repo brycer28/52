@@ -1,12 +1,13 @@
 package logic;
 
+import account.User;
 import cards.*;
 import cards.Hand.HandValue;
 import graphics.TexasHoldemPanel;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
-
-import account.User;
+import logic.GameMessage.MessageType;
 import server.GameServer;
 
 public class TexasHoldem {
@@ -34,61 +35,56 @@ public class TexasHoldem {
     }
 
     public void startGame() {
-        gameRunning = true;
         resetGame();
 
-        new Thread(() -> {
-            while (gameRunning) {
-                playRound();
-                GUI.updateStats();
-
-                boolean playAgain = true;
-                playAgain = GUI.displayReplayPrompt();
-                if (!playAgain) {
-                    gameRunning = false;
-                    break;
-                }
-                gameRunning = true;
-                resetGame();
-            }
-            GUI.endGame();
-        }).start();
+        server.broadcast(new GameMessage<>(MessageType.START_GAME, new GameState();)); // need fixes to make this functional
+    
+        playRound();
     }
 
     public void playRound() {
+        // ############## Pre-Flop ####################
+
         for (User user : players) {
             user.getHand().dealCard(deck);
             user.getHand().dealCard(deck);
         }
-        GUI.updateHands();
+        
+        // broadcast new game state to update client views
+        server.broadcast(new GameMessage<>(MessageType.STATE_UPDATE, new GameState(this.getGameState()))); 
 
-        executeBettingRound();
-        GUI.updateStats();
-        if (!gameRunning) return;
+        // execute one betting round (pre-flop) - end of betting round should broadcast state update again to update pot, bet, etc
+        executeBettingRound();  
+
+        // ############## Post-Flop ####################
 
         for (int i = 0; i < 3; i++) {
             communityCards.dealCard(deck);
         }
-        GUI.updateCommunityCards();
+
+        server.broadcast(new GameMessage<>(MessageType.STATE_UPDATE, new GameState(this.getGameState()))); 
 
         executeBettingRound();
-        GUI.updateStats();
-        if (!gameRunning) return;
+
+        // ############## Turn ####################
 
         communityCards.dealCard(deck);
-        GUI.updateCommunityCards();
+
+        server.broadcast(new GameMessage<>(MessageType.STATE_UPDATE, new GameState(this.getGameState()))); 
 
         executeBettingRound();
-        GUI.updateStats();
-        if (!gameRunning) return;
+
+        // ############## River ####################
 
         communityCards.dealCard(deck);
-        GUI.updateCommunityCards();
+
+        server.broadcast(new GameMessage<>(MessageType.STATE_UPDATE, new GameState(this.getGameState()))); 
 
         executeBettingRound();
-        GUI.updateStats();
-        if (!gameRunning) return;
 
+        // ############## Showdown ####################
+
+        // check each players hand to determine a winner of this round - method should handle broadcast of winner
         determineWinner();
     }
 
@@ -99,24 +95,23 @@ public class TexasHoldem {
             if (!user.isActive()) continue;
 
             // notify player that it is their turn
-            GameMessage notifyTurn = new GameMessage(GameMessage.MessageType.NOTIFY_TURN, null);
-            server.sendToClient()
-
-            // handle option accordingly
-
-            waitForResponse();
+            GameMessage<User> msg = new GameMessage<>(MessageType.NOTIFY_TURN, user);
+            try {
+                // server has a map of User-ConnectionToClient - send a turn notification to signal prompt for option
+                server.sendToUser(msg, user);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            // server SHOULD be doing the handleOption when clients respond to notification
         }
     }
 
-    public void handleOption(GameMessage gm) {
-    
-        User user = getUserBy
+    // this method should only take in GameMessage(PLAYER_ACTION, User)
+    public void handleOption(Options opt, User user) {
         validOption = false;
 
         while (!validOption) {
-            Options option = user.getOption(); // decide how to 'get option'
-
-            switch (option) {
+            switch (opt) {
                 case CHECK:
                     handleCheck(user);
                     break;
@@ -166,12 +161,14 @@ public class TexasHoldem {
         }
     }
 
+
     public void handleFold(User user) {
         user.setBalance(user.getBalance() - currentBet); // deduct current bet from player balance
         pot += currentBet;
         currentBet = 0;
         validOption = true;
     }
+
 
     public void determineWinner() {
         HashMap<User, HandValue> handValueMap = new HashMap<>();
@@ -250,19 +247,10 @@ public class TexasHoldem {
         }
     }
 
-
-    private void waitForResponse() {
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void resetGame() {
         deck = new Deck();
         communityCards = new Hand();
-        for (User user : players) { user.clearHand(); } // clear all players hands
+        for (User user : players) { user.resetAfterRound(); } // clear all players hands
         pot = 0;
         GUI.resetGUI();
     }
@@ -280,5 +268,4 @@ public class TexasHoldem {
     }
     public int getRaiseAmount() { return raiseAmount; }
     public void setRaiseAmount(int raiseAmount) { this.raiseAmount = raiseAmount; }
-
 }

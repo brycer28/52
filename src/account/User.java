@@ -16,7 +16,6 @@ public class User implements java.io.Serializable {
         this.balance = startingBalance;
         this.isActive = true;
         this.bet = 0;
-
     }
 
     public String getUsername() {
@@ -77,6 +76,12 @@ public class User implements java.io.Serializable {
 
     public void clearHand() {
         hand.clear();
+    }
+
+    public void resetAfterRound() {
+        clearHand();
+        resetCurrentBet();
+        setActive(true);
     }
 
     @Override
