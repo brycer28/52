@@ -117,6 +117,39 @@ public class GameServer extends AbstractServer {
         for (Map.Entry<ConnectionToClient, User> entry : clientUserMap.entrySet()) {
             ConnectionToClient client = entry.getKey();
             client.sendToClient(msg);
+
         }
     }
+
+    private void sendToUser(User user, GameMessage msg) {
+        for (Map.Entry<ConnectionToClient, User> entry : clientUserMap.entrySet()) {
+            if (entry.getValue().equals(user)) {
+                try {                   
+                    entry.getKey().sendToClient(msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void sendToAllClients(GameMessage msg) {
+        for (Map.Entry<ConnectionToClient, User> entry : clientUserMap.entrySet()) {
+            try {
+                entry.getKey().sendToClient(msg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // // Handles interaction with game server updating based on client input from handleMessageFromClient
+    // private void handlePlayerAction(Options opt, ConnectionToClient client) {
+    //     // update game state
+    //     game.handleAction(opt);
+
+    //     // broadcast updated state to clients
+    //     GameMessage updateMessage = new GameMessage("GAME_STATE_UPDATE", game.getCurrentState());
+    //     sendToAllClients(updateMessage);
+    // }
 }

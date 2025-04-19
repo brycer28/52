@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 import logic.GameMessage.MessageType;
+
 import server.GameServer;
 
 public class TexasHoldem {
@@ -108,6 +109,7 @@ public class TexasHoldem {
 
     // this method should only take in GameMessage(PLAYER_ACTION, User)
     public void handleOption(Options opt, User user) {
+
         validOption = false;
 
         while (!validOption) {

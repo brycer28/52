@@ -28,6 +28,7 @@ public class GameMessage<T> implements Serializable {
     private final MessageType type;
     private final T data;
 
+
     public enum MessageType {
         START_GAME, NOTIFY_TURN, PLAYER_ACTION, STATE_UPDATE, WINNER
     }
