@@ -5,7 +5,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
 import Client.PlayerClient;
-import Client.GameClient;
 import Client.CurrentClient;
 import graphics.panels.LobbyPanel;
 import logic.TexasHoldem;
@@ -43,10 +42,7 @@ public class IntegratedLobbyPanelTest {
                 e.printStackTrace();
             }
 
-            // Create a dummy GameClient instance using the PlayerClient.
-            GameClient gameClient = new GameClient(playerClient, "TestGame");
 
-            // Create a dummy TexasHoldem instance.
             TexasHoldem texasHoldem = new TexasHoldem();
 
             // Create a dummy CurrentClient instance for demonstration.

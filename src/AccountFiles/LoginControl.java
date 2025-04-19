@@ -9,7 +9,7 @@ import Client.*;
 public class LoginControl {
 
     private JPanel container;
-    private GameClient client;
+    private PlayerClient client;
 
     public LoginControl(JPanel container) { // Add GameClient to parameters
         this.container = container;

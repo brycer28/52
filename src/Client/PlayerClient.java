@@ -19,7 +19,6 @@ import java.io.IOException;
 public class PlayerClient extends AbstractClient{
     private LoginControl loginControl;
     private CreateAccountControl createAccountControl;
-    private GameClient gameclient;
     private LobbyControl lobbyControl;
     private GameControl gameControl;
     private User currentUser;
@@ -29,11 +28,6 @@ public class PlayerClient extends AbstractClient{
     private Map<String, Consumer<Message>> messageHandlers;
     private String serverName;
     private MainGameFrame mainGameFrame;
-
-
-
-
-
 
     public PlayerClient(String host, int port) throws IOException {
         super(host, port);
