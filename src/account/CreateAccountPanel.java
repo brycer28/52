@@ -3,7 +3,6 @@ package account;
 import java.awt.*;
 import javax.swing.*;
 
-
 public class CreateAccountPanel extends JPanel {
     private JTextField username;
     private JPasswordField passwordField;
@@ -11,7 +10,7 @@ public class CreateAccountPanel extends JPanel {
     private JButton submitButton;
     private JButton cancelButton;
 
-    public CreateAccountPanel() {
+    public CreateAccountPanel(CreateAccountControl cc) {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.io.IOException;
 
-public class PlayerClient extends AbstractClient{
+public class PlayerClient extends AbstractClient {
     private LoginControl loginControl;
     private CreateAccountControl createAccountControl;
     private GameClient gameclient;

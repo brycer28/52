@@ -1,9 +1,6 @@
 package account;
-
 import javax.swing.*;
-
-import client.*;
-
+import ocsf.client.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -11,7 +8,8 @@ import java.io.IOException;
 public class LoginControl {
 
     private JPanel container;
-    private GameClient client;
+    private client.GameClient client;
+
 
     public LoginControl(JPanel container) { // Add GameClient to parameters
         this.container = container;

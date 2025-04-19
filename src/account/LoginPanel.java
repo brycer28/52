@@ -23,7 +23,7 @@ public class LoginPanel extends JPanel {
         errorLabel.setText(error);
     }
 
-    public LoginPanel() {
+    public LoginPanel(LoginControl loginControl) {
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
