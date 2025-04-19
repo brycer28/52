@@ -297,5 +297,19 @@ public class TexasHoldem {
     }
     public int getRaiseAmount() { return raiseAmount; }
     public void setRaiseAmount(int raiseAmount) { this.raiseAmount = raiseAmount; }
+    public int getPlayerChips() {
+        return 1000; // temporary stub
+    }
+
+    public int getDealerChips() {
+        return 1000; // temporary stub
+    }
+    public List<Card> getPlayerHand() {
+        return new ArrayList<>(); // placeholder, returns an empty hand for now
+    }
+
+    public List<Card> getDealerHand() {
+        return new ArrayList<>(); // placeholder, returns an empty hand for now
+    }
 
 }

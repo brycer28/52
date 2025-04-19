@@ -12,7 +12,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import account.*;
-
+import cards.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -468,7 +468,10 @@ public class ServerClass extends AbstractServer {
 
             // Add card info only for the player who’s requesting
             if (player.getUsername().equals(targetUsername)) {
-                List<CardClass> cards = player.getHand().getCards();
+                List<CardClass> cards = new ArrayList<>();
+                for (Card card : player.getHand().getCards()) {
+                    cards.add(new CardClass(card.getSuit().toString(), card.getRank().toString()));
+                }
                 sb.append("|").append(cards.size());
                 for (CardClass card : cards) {
                     sb.append("|").append(card.getSuit())
@@ -607,7 +610,10 @@ public class ServerClass extends AbstractServer {
         sb.append(game.getCurrentBet()).append(":");
         sb.append(game.getCurrentPlayerUsername()).append(":");
 
-        ArrayList<CardClass> communityCards = game.getCommunityCards();
+        List<CardClass> communityCards = new ArrayList<>();
+        for (Card card : game.getCommunityCards()) {
+            communityCards.add(new CardClass(card.getSuit().toString(), card.getRank().toString()));
+        }
         sb.append(communityCards.size()).append(":");
         if (!communityCards.isEmpty()) {
             for (int i = 0; i < communityCards.size(); i++) {
@@ -626,7 +632,10 @@ public class ServerClass extends AbstractServer {
                     .append(player.isActive());
 
             if (player.getUsername().equals(targetPlayer)) {
-                ArrayList<CardClass> playerCards = player.getHand().getCards();
+                List<CardClass> playerCards = new ArrayList<>();
+                for (Card card : player.getHand().getCards()) {
+                    playerCards.add(new CardClass(card.getSuit().toString(), card.getRank().toString()));
+                }
                 sb.append(",").append(playerCards.size());
                 for (CardClass card : playerCards) {
                     sb.append(",").append(card.getSuit())

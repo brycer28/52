@@ -1,29 +1,30 @@
 package client;
 
-import graphics.*;
+import graphics.MainGameFrame;
+import graphics.TexasHoldemPanel;
 
 import javax.swing.*;
 
 import account.*;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Acts as the main controller for the client-side application.
  * Mediates between the UI (MainGameFrame) and network logic (PlayerClient).
  */
-
 public class GameClient {
     private MainGameFrame mainFrame;
     private PlayerClient networkClient;
     private User currentUser;
     private logic.TexasHoldem texasHoldemLogic;
-    private graphics.TexasHoldemPanel texasHoldemPanel;
+    private TexasHoldemPanel texasHoldemPanel;
 
     public GameClient(PlayerClient networkClient) {
         this.networkClient = networkClient;
-        this.mainFrame = new MainGameFrame();
+
+        // ✅ Use the unified MainGameFrame from graphics
+        this.mainFrame = new MainGameFrame(networkClient);
 
         // Connect the network client to this controller
         this.networkClient.setGameControl(this);
@@ -75,6 +76,4 @@ public class GameClient {
             e.printStackTrace();
         }
     }
-
 }
-

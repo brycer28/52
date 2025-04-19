@@ -5,10 +5,10 @@ import account.LoginControl;
 import account.CreateAccountData;
 import account.LoginData;
 import account.User;
+import graphics.MainGameFrame; // updated import
 import ocsf.client.AbstractClient;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,5 +99,11 @@ public class PlayerClient extends AbstractClient {
     public void setUsername(String username) {
         this.username = username;
     }
-}
 
+    // Updated: use graphics.MainGameFrame instead of OldMainGameFrame
+    private MainGameFrame mainGameFrame;
+
+    public void setMainGameFrame(MainGameFrame mainGameFrame) {
+        this.mainGameFrame = mainGameFrame;
+    }
+}

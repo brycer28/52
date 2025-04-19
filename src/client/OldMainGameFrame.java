@@ -2,9 +2,8 @@ package client;
 
 import javax.swing.*;
 import java.awt.*;
-import graphics.*;
 
-public class MainGameFrame extends JFrame {
+public class OldMainGameFrame extends JFrame {
     private JPanel cardPanel;         // The container for all panels (CardLayout)
     private CardLayout cardLayout;    // Layout manager
 
@@ -15,7 +14,7 @@ public class MainGameFrame extends JFrame {
     private JPanel gamePlayPanel;
     private JPanel statsPanel;
 
-    public MainGameFrame() {
+    public OldMainGameFrame() {
         super("Texas Hold'em"); // Set window title
 
         // Initialize layout and card panel

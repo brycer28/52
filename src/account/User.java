@@ -2,6 +2,7 @@ package account;
 
 import cards.Card;
 import cards.Hand;
+import logic.TexasHoldem.Options;
 
 public class User implements java.io.Serializable {
     private String username;
@@ -17,6 +18,11 @@ public class User implements java.io.Serializable {
         this.isActive = true;
         this.bet = 0;
 
+    }
+
+    // Placeholer method
+    public Options getOption() {
+        return Options.CHECK; // stub value for now
     }
 
     public String getUsername() {
