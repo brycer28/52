@@ -31,10 +31,6 @@ public class PlayerClient extends AbstractClient{
     private MainGameFrame mainGameFrame;
 
 
-
-
-
-
     public PlayerClient(String host, int port) throws IOException {
         super(host, port);
         this.players = new ArrayList<User>();
