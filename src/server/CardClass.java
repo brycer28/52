@@ -1,4 +1,4 @@
-cpackage server;
+package server;
 
 public class CardClass {
     private String suit;
