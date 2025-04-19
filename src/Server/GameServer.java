@@ -84,19 +84,40 @@ public class GameServer extends AbstractServer {
     // Handles messages from clients (to be implemented)
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-        // Game logic or chat handling goes here
-        if (msg instanceof GameMessage) {
-            GameMessage gm = (GameMessage) msg;
+        if (msg instanceof GameMessage<?>) {
+            GameMessage<?> gm = (GameMessage<?>) msg;
+
             switch (gm.getType()) {
-                case START_GAME -> game.startGame();
+                case PLAYER_ACTION -> {
+                    User user = clientUserMap.get(client);
+                    game.handleOption((Options) gm.getData(), user);
 
-                case NOTIFY_TURN -> {
-                    User user = gm.getData(); // NOTIFY_TURN should have a User sent as its data
-                    sendToUser(user, new GameMessage<User>(GameMessage.MessageType.NOTIFY_TURN, user));
+                    // needs to broadcast a state update
+
+                    // after state update, prompt next player - may need to do prompt outside of this method though
                 }
-
-
+                // add more options here - currently only Client -> Server comm should be inputting options
             }
+        }
+    }
+
+    // send a message to client by specifying corresponding user
+    public void sendToUser(GameMessage msg, User user) throws IOException {
+        for (Map.Entry<ConnectionToClient, User> entry : clientUserMap.entrySet()) {
+            if (entry.getValue().equals(user)) {
+                ConnectionToClient client = entry.getKey();
+                client.sendToClient(msg); // TODO Auto-generated catch block
+                break;
+            }
+        }
+    }
+
+    // broadcast method
+    public void sendToAllClients(GameMessage msg) throws IOException {
+        for (Map.Entry<ConnectionToClient, User> entry : clientUserMap.entrySet()) {
+            ConnectionToClient client = entry.getKey();
+            client.sendToClient(msg);
+
         }
     }
 
