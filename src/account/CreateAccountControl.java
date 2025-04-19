@@ -1,13 +1,12 @@
 package account;
 
-import client.*;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 public class CreateAccountControl{
     private JPanel container;
-    private GameClient client;
+    private client.GameClient client;
 
     public CreateAccountControl(JPanel container) {
         this.container = container;
