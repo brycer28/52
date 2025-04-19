@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import account.User;
+import server.GameServer;
 
 public class TexasHoldem {
     private TexasHoldemPanel GUI;
@@ -21,16 +22,15 @@ public class TexasHoldem {
     private Options playerOption;
     private Options dealerOption;
     private boolean gameRunning = true;
-    private ArrayList<User> players = new ArrayList<>(); 
-    private int currentPlayerIndex = 0;
+    private GameServer server;
+    private ArrayList<User> players = new ArrayList<>();
 
     public enum Options {
         CHECK, CALL, RAISE, FOLD
     }
 
-    public TexasHoldem() {
-        GUI = new TexasHoldemPanel(this);
-        startGame();
+    public TexasHoldem(GameServer gs) {
+        this.server = gs;
     }
 
     public void startGame() {
@@ -94,32 +94,13 @@ public class TexasHoldem {
 
     public void executeBettingRound() {
         currentBet = 0;
-        this.latch = new CountDownLatch(1);
-        // playerOption = null;
-        // waitForResponse();
-
-        // handleOption(true);
-
-        // if (playerOption == Options.FOLD) {
-        //     gameRunning = false;
-        //     GUI.displayPlayerFolded(true);
-        //     return;
-        // }
-
-        // handleOption(false);
-
-        // if (dealerOption == Options.FOLD) {
-        //     gameRunning = false;
-        //     GUI.displayPlayerFolded(false);
-        // }
 
         for (User user : players) {
-            Options option = null;
-            if (!user.isActive()) break;
+            if (!user.isActive()) continue;
 
-            latch = new CountDownLatch(1); // this will probably not work with Client/Server
-            
-            // get each players option
+            // notify player that it is their turn
+            GameMessage notifyTurn = new GameMessage(GameMessage.MessageType.NOTIFY_TURN, null);
+            server.sendToClient()
 
             // handle option accordingly
 
@@ -127,7 +108,9 @@ public class TexasHoldem {
         }
     }
 
-    public void handleOption(User user) {
+    public void handleOption(GameMessage gm) {
+    
+        User user = getUserBy
         validOption = false;
 
         while (!validOption) {

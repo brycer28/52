@@ -18,8 +18,8 @@ public class GameClient {
     private MainGameFrame mainFrame;
     private PlayerClient networkClient;
     private User currentUser;
-    private logic.TexasHoldem texasHoldemLogic;
-    private graphics.TexasHoldemPanel texasHoldemPanel;
+    // private logic.TexasHoldem texasHoldemLogic;
+    // private graphics.TexasHoldemPanel texasHoldemPanel;
 
     public GameClient(PlayerClient networkClient) {
         this.networkClient = networkClient;
