@@ -38,7 +38,7 @@ public class TexasHoldem {
     public void startGame() {
         resetGame();
 
-        server.broadcast(new GameMessage<>(MessageType.START_GAME, new GameState();)); // need fixes to make this functional
+        server.broadcast(new GameMessage<>(MessageType.START_GAME, new GameState())); // need fixes to make this functional
     
         playRound();
     }
