@@ -9,7 +9,7 @@ import java.util.*;
 
     public class ServerFinder {
     private static final int DISCOVERY_PORT = 8301;
-    private static final String DISCOVERY_MESSAGE = "TXHOLDEM_SERVER_DISCOVERY";
+    private static final String DISCOVERY_MESSAGE = "POKER_SERVER_DISCOVERY";
     private List<ServerInfo> discoveredServers = new ArrayList<>();
 
     // Holds info about a discovered server

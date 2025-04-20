@@ -8,6 +8,8 @@ import java.util.concurrent.*;
 
 import account.User;
 
+import javax.swing.*;
+
 public class TexasHoldem {
     private TexasHoldemPanel GUI;
     private Deck deck;
@@ -38,19 +40,27 @@ public class TexasHoldem {
         resetGame();
 
         new Thread(() -> {
-            while (gameRunning) {
+            do {
                 playRound();
                 GUI.updateStats();
 
-                boolean playAgain = true;
-                playAgain = GUI.displayReplayPrompt();
-                if (!playAgain) {
-                    gameRunning = false;
-                    break;
+                // Display prompt and wait for user response (on Swing thread)
+                final boolean[] playAgain = new boolean[1];
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        playAgain[0] = GUI.displayReplayPrompt();
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                gameRunning = true;
-                resetGame();
-            }
+
+                gameRunning = playAgain[0];
+                if (gameRunning) {
+                    resetGame();
+                }
+
+            } while (gameRunning);
+
             GUI.endGame();
         }).start();
     }
