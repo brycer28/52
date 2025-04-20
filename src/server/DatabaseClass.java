@@ -83,16 +83,7 @@ public class DatabaseClass {
                 + "WHERE username = '" + username + "';";
 
         // Stop if this account doesn't exist.
-        if (query(query) == null)
-            return false;
-
-        String db_password = query(query).getFirst().split(",")[1];
-
-        // Check the username and password.
-        if (password.equals(db_password))
-            return true;
-        else
-            return false;
+        return query(query) != null;
     }
 
     public ArrayList<String> query(String query)

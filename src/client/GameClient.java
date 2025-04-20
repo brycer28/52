@@ -14,6 +14,10 @@ import java.io.IOException;
  */
 
 public class GameClient extends AbstractClient {
+
+    private LoginControl loginControl;
+    private CreateAccountControl createAccountControl;
+
     public GameClient(String host, int port) throws IOException {
         super(host, port);
         openConnection();
@@ -27,6 +31,14 @@ public class GameClient extends AbstractClient {
 //        }
     }
 
+    public void setLoginControl(LoginControl loginControl) {
+        this.loginControl = loginControl;
+    }
+
+    public void setCreateAccountControl (CreateAccountControl createAccountControl) {
+        this.createAccountControl = createAccountControl;
+    }
+
     @Override
     protected void handleMessageFromServer(Object msg) {
         if (msg instanceof GameMessage) {
@@ -34,14 +46,22 @@ public class GameClient extends AbstractClient {
 
             switch (gameMessage.getType()) {
                 case LOGIN -> {
-                    // try to login by sending request to database
-
-                    // view.getLoginControl.success() ??
+                    // try to log in by sending request to database
+                    if (gameMessage.getData() instanceof LoginData) {
+                        // view.getLoginControl.success() ??
+                        loginControl.success();
+                    }
+                    else if (gameMessage.getData() instanceof Error) {
+                        //display error if occurred
+                        loginControl.displayError("The username or password is incorrect");
+                    }
                 }
                 case CREATE_ACC -> {
                     // try to create account by requesting database
-
-                    // view.getCreateAccControl.success() ??
+                    if (msg.equals("createAccountSuccessful")) {
+                        // view.getCreateAccControl.success() ??
+                        createAccountControl.createAccountSuccess();
+                    }
                 }
                 case START_GAME -> {
                     GameState gs = (GameState) gameMessage.getData();

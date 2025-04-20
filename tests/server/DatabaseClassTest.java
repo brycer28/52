@@ -16,13 +16,13 @@ public class DatabaseClassTest {
     @Before
     public void setUp() throws Exception {
         db = new DatabaseClass();
-        db.setConnection("server/db.properties");
+        db.setConnection("src/server/db.properties");
         rando = ((int) (Math.random() * users.length));
     }
 
     @Test
     public void testSetConnection() {
-        db.setConnection("server/db.properties");
+        db.setConnection("src/server/db.properties");
         Connection conn = db.getConnection();
         assertNotNull(conn);
     }
