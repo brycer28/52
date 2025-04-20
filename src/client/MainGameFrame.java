@@ -1,13 +1,9 @@
-package Client;
+package client;
 
 import javax.swing.*;
 import java.awt.*;
 
-import account.CreateAccountControl;
-import account.InitialControl;
-import account.InitialPanel;
-import account.LoginControl;
-import graphics.*;
+import account.*;
 
 public class MainGameFrame extends JFrame {
     private JPanel cardPanel;         // The container for all panels (CardLayout)
@@ -20,6 +16,7 @@ public class MainGameFrame extends JFrame {
     private JPanel lobbyPanel;
     private JPanel gamePlayPanel;
     private JPanel statsPanel;
+    private client.GameClient client;
 
     //view 1 = initial panel
     //view 2 = login panel
@@ -44,17 +41,18 @@ public class MainGameFrame extends JFrame {
 
         //Views
         JPanel initPanel = new InitialPanel(ic);
-        loginPanel = new account.LoginPanel(lc);                     // assuming you have these classes
-        createAccountPanel = new account.CreateAccountPanel(cc);
+        loginPanel = new LoginPanel(lc);                     // assuming you have these classes
+        createAccountPanel = new CreateAccountPanel(cc);
 
         cardPanel.add(initPanel, "initPanel");
-        cardPanel.add(loginPanel, "login");
+        cardPanel.add(loginPanel, "loginPanel");
         cardPanel.add(createAccountPanel, "createAccountPanel");
 
-        cardPanel.add(lobbyPanel, "lobby");
-        cardPanel.add(gamePlayPanel, "texasHoldem");
-        cardPanel.add(statsPanel, "stats");
+        cardPanel.add(lobbyPanel, "lobbyPanel");
+        cardPanel.add(gamePlayPanel, "texasHoldemPanel");
+        cardPanel.add(statsPanel, "statsPanel");
 
+        // Select which panel to show first
         cardLayout.show(cardPanel, "initPanel");
 
         // Set the card panel as the content pane of the JFrame
@@ -70,6 +68,7 @@ public class MainGameFrame extends JFrame {
      * @param panelName The name of the panel to show ("login", "lobby", etc.)
      */
     public void setPanel(String panelName) {
+
         cardLayout.show(cardPanel, panelName);
     }
 
