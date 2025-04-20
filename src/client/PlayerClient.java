@@ -1,15 +1,14 @@
 package client;
 
 import AccountFiles.User;
-import Client.controllers.GameControl;
-import Client.controllers.LobbyControl;
+import client.controllers.GameControl;
+import client.controllers.LobbyControl;
 
 import graphics.MainGameFrame;
 import AccountFiles.CreateAccountControl;
 import AccountFiles.LoginControl;
 import ocsf.client.AbstractClient;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
 import java.util.List;

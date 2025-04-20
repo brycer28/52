@@ -31,18 +31,18 @@ public class InitialControl implements ActionListener
         // The Login button takes the user to the login panel.
         if (command.equals("Login"))
         {
-            LoginPanel loginPanel = (LoginPanel)container.getComponent(1);
+            //LoginPanel loginPanel = (LoginPanel)container.getComponent(1);
             CardLayout cardLayout = (CardLayout)container.getLayout();
-            cardLayout.show(container, "2");
+            cardLayout.show(container, "loginPanel");
 
         }
 
         // The Create button takes the user to the create account panel.
         else if (command.equals("Create Account"))
         {
-            CreateAccountPanel createAccountPanel = (CreateAccountPanel)container.getComponent(2);
+           // CreateAccountPanel createAccountPanel = (CreateAccountPanel)container.getComponent(2);
             CardLayout cardLayout = (CardLayout)container.getLayout();
-            cardLayout.show(container, "3");
+            cardLayout.show(container, "createAccountPanel");
         }
     }
 }

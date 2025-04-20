@@ -26,7 +26,7 @@ public class GameClient {
         this.networkClient.setContainer((JPanel) mainFrame.getContentPane());
 
         // Set up control listeners (Login, Account creation, etc.)
-        setUpControls();
+        //setUpControls();
 
         // Show the frame
         SwingUtilities.invokeLater(() -> {
@@ -37,19 +37,19 @@ public class GameClient {
         });
     }
 
-    private void setUpControls() {
-        LoginControl loginControl = new LoginControl((JPanel) mainFrame.getContentPane());
-        CreateAccountControl createAccountControl = new CreateAccountControl((JPanel) mainFrame.getContentPane());
-
-        networkClient.setLoginControl(loginControl);
-        networkClient.setCreateAccountControl(createAccountControl);
-    }
-
-    public void loginSuccessful(User user) {
-        this.currentUser = user;
-        networkClient.setCurrentUser(user);
-        mainFrame.setPanel("lobby");
-    }
+//    private void setUpControls() {
+//        LoginControl loginControl = new LoginControl((JPanel) mainFrame.getContentPane());
+//        CreateAccountControl createAccountControl = new CreateAccountControl((JPanel) mainFrame.getContentPane());
+//
+//        networkClient.setLoginControl(loginControl);
+//        networkClient.setCreateAccountControl(createAccountControl);
+//    }
+//
+//    public void loginSuccessful(User user) {
+//        this.currentUser = user;
+//        networkClient.setCurrentUser(user);
+//        mainFrame.setPanel("lobby");
+//    }
 
     public void showLoginPanel() {
         mainFrame.setPanel("login");
