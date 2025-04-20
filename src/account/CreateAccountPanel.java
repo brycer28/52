@@ -4,17 +4,17 @@ import java.awt.*;
 import javax.swing.*;
 
 public class CreateAccountPanel extends JPanel {
-    private JTextField username;
+    private JTextField usernameField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
     private JButton submitButton;
     private JButton cancelButton;
 
-    public CreateAccountPanel(CreateAccountControl cc) {
+    public CreateAccountPanel(CreateAccountControl createAccountControl) {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        username = new JTextField(15);
+        usernameField = new JTextField(15);
         passwordField = new JPasswordField(15);
         confirmPasswordField = new JPasswordField(15);
         submitButton = new JButton("Create Account");
@@ -24,7 +24,7 @@ public class CreateAccountPanel extends JPanel {
         gbc.gridy = 0;
         add(new JLabel("Username:"), gbc);
         gbc.gridx = 1;
-        add(username, gbc);
+        add(usernameField, gbc);
         // adds password label and field
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -37,21 +37,24 @@ public class CreateAccountPanel extends JPanel {
         add(new JLabel("Confirm Password:"), gbc);
         gbc.gridx = 1;
         add(confirmPasswordField, gbc);
+
         // creating submit and cancel buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(submitButton);
         buttonPanel.add(cancelButton);
 
+        // add controller as action listener
+        submitButton.addActionListener(createAccountControl);
+        cancelButton.addActionListener(createAccountControl);
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         add(buttonPanel, gbc);
-
-
     }
 
     public String getUsername() {
-        return username.getText();
+        return usernameField.getText();
     }
 
     public String getPassword() {

@@ -6,7 +6,13 @@ import java.io.Serializable;
  * GAME MESSAGE SPECIFICATIONS
  * 
  * Each message should have a MessageType and corresponding Data
- * 
+ *
+ * LOGIN: new GameMessage(mt=LOGIN, data=LoginData)
+ *  - Send server a login credential request
+ *
+ *  CREATE_ACC: new GameMessage(mt=CREATE_ACC, data=CreateAccData)
+ *   - Send server a create account request
+ *
  * START_GAME: new GameMessage(mt=START_TURN, data=GameState)
  *  - Transmit and initial GameState object to start a game
  * 
@@ -30,7 +36,7 @@ public class GameMessage<T> implements Serializable {
 
 
     public enum MessageType {
-        START_GAME, NOTIFY_TURN, PLAYER_ACTION, STATE_UPDATE, WINNER
+        LOGIN, CREATE_ACC, START_GAME, NOTIFY_TURN, PLAYER_ACTION, STATE_UPDATE, WINNER
     }
 
     public GameMessage(MessageType mt, T data) {

@@ -7,6 +7,7 @@ package server;
 import account.User;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import ocsf.server.AbstractServer;
@@ -17,16 +18,10 @@ import logic.GameMessage;
 import logic.TexasHoldem;
 
 public class GameServer extends AbstractServer {
-
-    // Number of users not logged in
     private int unauthenticatedUsers = 0;
-
-    // Number of users logged in
     private int authenticatedUsers = 0;
 
     // Text areas in the GUI for showing user counts
-    private JTextArea unauthenticatedCountArea;
-    private JTextArea authenticatedCountArea;
 
     // Map of Users
     private HashMap<ConnectionToClient, User> clientUserMap = new HashMap<>();
@@ -35,10 +30,8 @@ public class GameServer extends AbstractServer {
     private TexasHoldem game;
 
     // Constructor sets up server and connects GUI text areas
-    public GameServer(int port, JTextArea unauthenticatedCountArea, JTextArea authenticatedCountArea) {
+    public GameServer(int port) {
         super(port);
-        this.unauthenticatedCountArea = unauthenticatedCountArea;
-        this.authenticatedCountArea = authenticatedCountArea;
         this.game = new TexasHoldem(this);
 
         updateCounterDisplays();
@@ -69,15 +62,15 @@ public class GameServer extends AbstractServer {
         unauthenticatedUsers--;
         authenticatedUsers++;
         client.setInfo("authenticated", true);
-        clientUserMap.put(client, user); // each ConnetionToClient should be directly mapped to a User object. Can handle creation wherever you guys like
+        clientUserMap.put(client, new User("foo", 500)); // each ConnectionToClient should be directly mapped to a User object. Can handle creation wherever you guys like
         updateCounterDisplays();
     }
 
     // Updates the user counts on the GUI
     private void updateCounterDisplays() {
         SwingUtilities.invokeLater(() -> {
-            unauthenticatedCountArea.setText("Unauthenticated Users: " + unauthenticatedUsers);
-            authenticatedCountArea.setText("Authenticated Users: " + authenticatedUsers);
+//            unauthenticatedCountArea.setText("Unauthenticated Users: " + unauthenticatedUsers);
+//            authenticatedCountArea.setText("Authenticated Users: " + authenticatedUsers);
         });
     }
 
@@ -117,9 +110,20 @@ public class GameServer extends AbstractServer {
         for (Map.Entry<ConnectionToClient, User> entry : clientUserMap.entrySet()) {
             ConnectionToClient client = entry.getKey();
             client.sendToClient(msg);
-
         }
     }
+
+    public ArrayList<ConnectionToClient> getClients() {
+        ArrayList<ConnectionToClient> clients = new ArrayList<>();
+        for (Map.Entry<ConnectionToClient, User> entry : clientUserMap.entrySet()) {
+            ConnectionToClient client = entry.getKey();
+            clients.add(client);
+        }
+        return clients;
+    }
+
+    public int getUnauthenticatedUsers() { return unauthenticatedUsers; }
+    public int getAuthenticatedUsers() { return authenticatedUsers; }
 
     // // Handles interaction with game server updating based on client input from handleMessageFromClient
     // private void handlePlayerAction(Options opt, ConnectionToClient client) {

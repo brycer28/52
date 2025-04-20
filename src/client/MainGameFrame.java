@@ -2,55 +2,51 @@ package client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 import account.*;
+import graphics.TexasHoldemPanel;
 
 public class MainGameFrame extends JFrame {
     private JPanel cardPanel;         // The container for all panels (CardLayout)
     private CardLayout cardLayout;    // Layout manager
 
-
     // Panels for different views
+    private InitialPanel initialPanel;
     private JPanel loginPanel;
     private JPanel createAccountPanel;
-    private JPanel lobbyPanel;
-    private JPanel gamePlayPanel;
-    private JPanel statsPanel;
-    private client.GameClient client;
+    private TexasHoldemPanel gamePanel;
 
-    //view 1 = initial panel
-    //view 2 = login panel
-    //view 3 = createAccount panel
-    //view 4 = game panel
+    public enum View {
+        INITIAL, LOGIN, CREATE, GAME
+    }
 
-    public MainGameFrame() {
+    private GameClient client;
+    private static final int PORT = 8300;
+
+    public MainGameFrame(GameClient client) {
         super("Texas Hold'em"); // Set window title
-        //server.Game game = new Game();
+        this.client = client;
+
         // Initialize layout and card panel
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
-        //lobbyPanel = new LobbyPanel();
-        //gamePlayPanel = new TexasHoldemPanel();              // or whatever your gameplay panel is
-        //statsPanel = new StatsPanel();
-
         //Controller classes
-        InitialControl ic = new InitialControl(cardPanel, client);
-        LoginControl lc = new LoginControl(cardPanel, client);
-        CreateAccountControl cc = new CreateAccountControl(cardPanel, client);
+        InitialControl ic = new InitialControl(this);
+        LoginControl lc = new LoginControl(this, client);
+        CreateAccountControl cc = new CreateAccountControl(this, client);
 
         //Views
-        JPanel initPanel = new InitialPanel(ic);
-        loginPanel = new LoginPanel(lc);                     // assuming you have these classes
+        initialPanel = new InitialPanel(ic);
+        loginPanel = new LoginPanel(lc);
         createAccountPanel = new CreateAccountPanel(cc);
+//        gamePanel = new TexasHoldemPanel(); // this should take in a GameState
 
-        cardPanel.add(initPanel, "initPanel");
+        cardPanel.add(initialPanel, "initialPanel");
         cardPanel.add(loginPanel, "loginPanel");
         cardPanel.add(createAccountPanel, "createAccountPanel");
-
-        cardPanel.add(lobbyPanel, "lobbyPanel");
-        cardPanel.add(gamePlayPanel, "texasHoldemPanel");
-        cardPanel.add(statsPanel, "statsPanel");
+//        cardPanel.add(gamePanel, "gamePanel");
 
         // Select which panel to show first
         cardLayout.show(cardPanel, "initPanel");
@@ -62,21 +58,31 @@ public class MainGameFrame extends JFrame {
         this.setVisible(true);
     }
 
-    /**
-     * Switches the visible panel using the CardLayout.
-     *
-     * @param panelName The name of the panel to show ("login", "lobby", etc.)
-     */
-    public void setPanel(String panelName) {
-
-        cardLayout.show(cardPanel, panelName);
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            GameClient client = null;
+            try {
+                client = new GameClient("localhost", PORT);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            new MainGameFrame(client);
+        });
     }
 
-    /**
-     * Returns the main card panel so other classes can add or interact with it.
-     */
-    public JPanel getCardPanel() {
-        return cardPanel;
+    public void setPanel(View v) {
+        switch (v) {
+            case INITIAL -> cardLayout.show(cardPanel, "initialPanel");
+
+            case CREATE -> cardLayout.show(cardPanel, "createAccountPanel");
+
+            case LOGIN -> cardLayout.show(cardPanel, "loginPanel");
+
+//            case GAME -> cardLayout.show(cardPanel, "gamePanel");
+        }
     }
+
+    public JPanel getCardPanel() { return cardPanel; }
+    public GameClient getClient() { return client; }
 }
 

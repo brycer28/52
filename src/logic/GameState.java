@@ -10,28 +10,21 @@ public class GameState {
     private Hand communityCards;
     private int pot;
     private int currentBet;
-    private boolean isRoundOver;
 
     public enum GamePhase {
         PRE_FLOP, FLOP, TURN, RIVER, SHOWDOWN, END
     }
 
-    public GameState(ArrayList<User> players, Hand communityCards, int pot, int currentBet, boolean isRoundOver) {
+    public GameState(ArrayList<User> players, Hand communityCards, int pot, int currentBet) {
         this.players = players;
         this.communityCards = communityCards;
         this.pot = pot;
         this.currentBet = currentBet;
-        this.isRoundOver = isRoundOver; 
     }
 
-    // Getters and Setters
-    public List<User> getPlayers() { return players; }
-
-    public void setPlayers(List<User> players) { this.players = players; } 
-
+    // Getters
+    public ArrayList<User> getPlayers() { return players; }
     public Hand getCommunityCards() { return communityCards; }
-
-    public void setCommunityCards(Hand communityCards) { this.communityCards = communityCards; }
-
     public int getPot() { return pot; }
+    public int getCurrentBet() { return currentBet; }
 }

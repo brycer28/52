@@ -161,17 +161,17 @@ public class TexasHoldemPanel extends JPanel {
             betLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
             statsPanel.add(betLabel);
 
-            JLabel playerChipsLabel = new JLabel("Player Chips: " + logic.getPlayerChips());
-            playerChipsLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
-            statsPanel.add(playerChipsLabel);
-
-            JLabel dealerChipsLabel = new JLabel("Dealer Chips: " + logic.getDealerChips());
-            dealerChipsLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
-            statsPanel.add(dealerChipsLabel);
-
-            JLabel dealerDecisionLabel = new JLabel("Dealer Option: " + logic.getDealerOption());
-            dealerDecisionLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
-            statsPanel.add(dealerDecisionLabel);
+//            JLabel playerChipsLabel = new JLabel("Player Chips: " + logic.getPlayerChips());
+//            playerChipsLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
+//            statsPanel.add(playerChipsLabel);
+//
+//            JLabel dealerChipsLabel = new JLabel("Dealer Chips: " + logic.getDealerChips());
+//            dealerChipsLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
+//            statsPanel.add(dealerChipsLabel);
+//
+//            JLabel dealerDecisionLabel = new JLabel("Dealer Option: " + logic.getDealerOption());
+//            dealerDecisionLabel.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
+//            statsPanel.add(dealerDecisionLabel);
 
             repaint();
             revalidate();
@@ -180,20 +180,18 @@ public class TexasHoldemPanel extends JPanel {
 
     public void updateHands() {
         SwingUtilities.invokeLater(() -> {
-            playerHandPanel.removeAll();
-            dealerHandPanel.removeAll();
 
-            for (Card card : logic.getPlayerHand()) {
-                card.setFaceUp(true);
-                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
-                playerHandPanel.add(cardPanel);
-            }
-
-            for (Card card : logic.getDealerHand()) {
-                card.setFaceUp(true);
-                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
-                dealerHandPanel.add(cardPanel);
-            }
+//            for (Card card : logic.getPlayerHand()) {
+//                card.setFaceUp(true);
+//                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
+//                playerHandPanel.add(cardPanel);
+//            }
+//
+//            for (Card card : logic.getDealerHand()) {
+//                card.setFaceUp(true);
+//                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
+//                dealerHandPanel.add(cardPanel);
+//            }
 
             repaint();
             revalidate();
@@ -219,11 +217,11 @@ public class TexasHoldemPanel extends JPanel {
         SwingUtilities.invokeLater(() -> {
             dealerHandPanel.removeAll();
 
-            for (Card card : logic.getDealerHand()) {
-                card.setFaceUp(true);
-                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
-                dealerHandPanel.add(cardPanel);
-            }
+//            for (Card card : logic.getDealerHand()) {
+//                card.setFaceUp(true);
+//                CardPanel cardPanel = new CardPanel(card, CARD_WIDTH);
+//                dealerHandPanel.add(cardPanel);
+//            }
 
             repaint();
             revalidate();
