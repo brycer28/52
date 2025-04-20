@@ -6,6 +6,7 @@ import client.MainGameFrame;
 import client.MainGameFrame.*;
 import logic.GameMessage;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -22,7 +23,9 @@ public class LoginControl implements ActionListener {
         String command = action.getActionCommand();
 
         if (command.equals("Cancel")) {
-            frame.setPanel(View.INITIAL);
+            CardLayout cardLayout = (CardLayout) frame.getLayout();
+            cardLayout.show(frame, "initialPanel");
+            //frame.setPanel(View.INITIAL);
         }
         else if (command.equals("Login")) {
             LoginPanel loginPanel = (LoginPanel) frame.getCardPanel().getComponent(2);
@@ -34,7 +37,7 @@ public class LoginControl implements ActionListener {
             }
 
             try {
-                GameMessage<LoginData> msg = new GameMessage<>(GameMessage.MessageType.LOGIN, loginData );
+                GameMessage<LoginData> msg = new GameMessage<>(GameMessage.MessageType.LOGIN, loginData);
                 client.sendToServer(msg);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
@@ -43,6 +46,9 @@ public class LoginControl implements ActionListener {
         }
     }
 
+    public void displayError(String message) {
+        JOptionPane.showMessageDialog(null, message);
+    }
     // not sure about this ?
     public void success() {
         frame.setPanel(View.GAME);

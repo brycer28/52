@@ -4,6 +4,7 @@ package server;
  * and updates the server GUI with the number of authenticated and unauthenticated users.
  */
 
+import account.LoginData;
 import account.User;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import logic.TexasHoldem;
 public class GameServer extends AbstractServer {
     private int unauthenticatedUsers = 0;
     private int authenticatedUsers = 0;
+    private DatabaseClass database;
 
     // Text areas in the GUI for showing user counts
 
@@ -35,6 +37,10 @@ public class GameServer extends AbstractServer {
         this.game = new TexasHoldem(this);
 
         updateCounterDisplays();
+    }
+
+    public void setDatabase(DatabaseClass database) {
+        this.database = database;
     }
 
     // Called when a client connects
@@ -81,6 +87,32 @@ public class GameServer extends AbstractServer {
             GameMessage<?> gm = (GameMessage<?>) msg;
 
             switch (gm.getType()) {
+                case LOGIN -> {
+                    LoginData data = (LoginData) msg;
+                    LoginData message = new LoginData("loginSuccessful", null);
+                    //Error result = null;
+
+                    if (database.verifyAccount(data.getUsername(), data.getPassword())) {
+                        try {
+                            GameMessage <LoginData> loginResult = new GameMessage<>(GameMessage.MessageType.LOGIN, message);
+                            client.sendToClient(loginResult);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        try {
+                            GameMessage <Error> loginResult = new GameMessage<>(GameMessage.MessageType.ERROR, new Error("loginUnsuccessful", null));
+                            client.sendToClient(loginResult);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+
                 case PLAYER_ACTION -> {
                     User user = clientUserMap.get(client);
                     game.handleOption((Options) gm.getData(), user);
@@ -99,7 +131,7 @@ public class GameServer extends AbstractServer {
         for (Map.Entry<ConnectionToClient, User> entry : clientUserMap.entrySet()) {
             if (entry.getValue().equals(user)) {
                 ConnectionToClient client = entry.getKey();
-                client.sendToClient(msg); // TODO Auto-generated catch block
+                client.sendToClient(msg);
                 break;
             }
         }
