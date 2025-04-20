@@ -9,16 +9,15 @@ public class DatabaseClass {
 
     private Connection conn;
 
-    public DatabaseClass() {
-        //Add your code here
+    public void setConnection(String fn) {
 
         //1. Create a properties object
         Properties prop = new Properties();
         FileInputStream fis = null;
 
-        //2. Open the db.properties with FileInputStrea
+        //2. Open the db.properties with FileInputStream
         try {
-            fis = new FileInputStream("server/db.properties");
+            fis = new FileInputStream(fn);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -39,6 +38,10 @@ public class DatabaseClass {
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Connection getConnection() {
+        return conn;
     }
 
     public boolean createNewAccount(String username, String password){
