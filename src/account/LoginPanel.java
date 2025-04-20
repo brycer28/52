@@ -1,30 +1,16 @@
 package account;
 
 import java.awt.*;
+import java.util.Arrays;
 import javax.swing.*;
 
 public class LoginPanel extends JPanel {
-
-    private JLabel errorLabel;
     private JTextField username;
     private JPasswordField passwordField;
     private JButton submitButton;
     private JButton cancelButton;
 
-    public String getUsername() {
-        return username.getText();
-    }
-
-    public String getPassword() {
-        return passwordField.getText();
-    }
-
-    public void setError(String error) {
-        errorLabel.setText(error);
-    }
-
     public LoginPanel(LoginControl loginControl) {
-
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -50,11 +36,21 @@ public class LoginPanel extends JPanel {
         buttonPanel.add(submitButton);
         buttonPanel.add(cancelButton);
 
+        // add controller for action listener
+        submitButton.addActionListener(loginControl);
+        cancelButton.addActionListener(loginControl);
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         add(buttonPanel, gbc);
-
     }
 
+    public String getUsername() {
+        return username.getText();
+    }
+
+    public String getPassword() {
+        return Arrays.toString(passwordField.getPassword()); // getPassword returns a char[]
+    }
 }

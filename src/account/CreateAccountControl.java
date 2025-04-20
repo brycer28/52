@@ -1,30 +1,36 @@
 package account;
 
-import java.awt.CardLayout;
+import client.GameClient;
+import client.MainGameFrame;
+import client.MainGameFrame.*;
+import logic.GameMessage;
+
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class CreateAccountControl{
-    private JPanel container;
+public class CreateAccountControl implements ActionListener {
+    private MainGameFrame frame;
     private client.GameClient client;
 
-    public CreateAccountControl(JPanel container) {
-        this.container = container;
+    public CreateAccountControl(MainGameFrame frame, GameClient client) {
+        this.frame = frame;
+        this.client = client;
     }
-    public void actionPerformed(ActionEvent action) {
 
+    public void actionPerformed(ActionEvent action) {
         String command = action.getActionCommand();
 
         if (command.equals("Cancel")) {
-            CardLayout cardLayout = (CardLayout) container.getLayout();
-            cardLayout.show(container, "InitialPanel");
+            frame.setPanel(View.INITIAL);
         }
 
         else if (command.equals("Create Account")) {
-            CreateAccountPanel createPanel = (CreateAccountPanel)container.getComponent(3);
-            CreateAccountData data = new CreateAccountData(createPanel.getUsername(), createPanel.getPassword());
+            CreateAccountPanel createPanel = (CreateAccountPanel) frame.getComponent(3);
+            CreateAccountData loginData = new CreateAccountData(createPanel.getUsername(), createPanel.getPassword());
 
-            if (data.getUsername().isBlank() || data.getPassword().isBlank()) {
+            // validate create account credentials
+            if (loginData.getUsername().isBlank() || loginData.getPassword().isBlank()) {
                 JOptionPane.showMessageDialog(null, "Username and Password must not be empty");
                 return;
             }
@@ -38,19 +44,18 @@ public class CreateAccountControl{
                 JOptionPane.showMessageDialog(null, "The password must be at least 6 characters");
                 return;
             }
+
             try {
-                client.sendToServer(data);
+                GameMessage<CreateAccountData> msg = new GameMessage<>(GameMessage.MessageType.CREATE_ACC, loginData);
+                client.sendToServer(msg);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
                 e.printStackTrace(); // Optional but helpful for debugging
             }
-
         }
     }
 
     public void createAccountSuccess() {
-        CreateAccountPanel createPanel = (CreateAccountPanel)container.getComponent(2);
-        CardLayout cardLayout = (CardLayout) container.getLayout();
-        cardLayout.show(container, "TexasHoldemPanel");
+        frame.setPanel(View.GAME);
     }
 }

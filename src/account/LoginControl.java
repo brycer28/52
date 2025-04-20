@@ -1,52 +1,50 @@
 package account;
 import javax.swing.*;
-import ocsf.client.*;
-import java.awt.*;
+
+import client.GameClient;
+import client.MainGameFrame;
+import client.MainGameFrame.*;
+import logic.GameMessage;
+
 import java.awt.event.ActionEvent;
-import java.io.IOException;
+import java.awt.event.ActionListener;
 
-public class LoginControl {
-
-    private JPanel container;
+public class LoginControl implements ActionListener {
+    private MainGameFrame frame;
     private client.GameClient client;
 
-
-    public LoginControl(JPanel container) { // Add GameClient to parameters
-        this.container = container;
+    public LoginControl(MainGameFrame frame, GameClient client) {
+        this.frame = frame;
+        this.client = client;
     }
 
     public void actionPerformed(ActionEvent action) {
-
         String command = action.getActionCommand();
 
         if (command.equals("Cancel")) {
-            CardLayout cardLayout = (CardLayout) container.getLayout();
-            cardLayout.show(container, "InitialPanel");
+            frame.setPanel(View.INITIAL);
         }
-
         else if (command.equals("Login")) {
-            LoginPanel loginPanel = (LoginPanel)container.getComponent(2);
-            LoginData data = new LoginData(loginPanel.getUsername(), loginPanel.getPassword());
+            LoginPanel loginPanel = (LoginPanel) frame.getCardPanel().getComponent(2);
+            LoginData loginData = new LoginData(loginPanel.getUsername(), loginPanel.getPassword());
 
-            if (data.getUsername().equals("") || data.getPassword().equals("")) {
+            if (loginData.getUsername().equals("") || loginData.getPassword().equals("")) {
                 JOptionPane.showMessageDialog(null, "Username and Password must not be empty");
                 return;
             }
 
             try {
-                client.sendToServer(data);
+                GameMessage<LoginData> msg = new GameMessage<>(GameMessage.MessageType.LOGIN, loginData );
+                client.sendToServer(msg);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
                 e.printStackTrace(); // Optional: helps with debugging if something goes wrong
             }
-
         }
     }
 
+    // not sure about this ?
     public void success() {
-        LoginPanel loginPanel = (LoginPanel)container.getComponent(1);
-        CardLayout cardLayout = (CardLayout) container.getLayout();
-        cardLayout.show(container, "TexasHoldemPanel");
+        frame.setPanel(View.GAME);
     }
-
 }

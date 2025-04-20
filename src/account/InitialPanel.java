@@ -5,7 +5,7 @@ import javax.swing.*;
 public class InitialPanel extends JPanel
 {
     // Constructor for the initial panel.
-    public InitialPanel(InitialControl ic)
+    public InitialPanel(InitialControl initialControl)
     {
         // Create the controller.
         //InitialControl controller = new InitialControl(container);
@@ -15,13 +15,13 @@ public class InitialPanel extends JPanel
 
         // Create the login button.
         JButton loginButton = new JButton("Login");
-        loginButton.addActionListener(ic);
+        loginButton.addActionListener(initialControl);
         JPanel loginButtonBuffer = new JPanel();
         loginButtonBuffer.add(loginButton);
 
         // Create the create account button.
         JButton createButton = new JButton("Create Account");
-        createButton.addActionListener(ic);
+        createButton.addActionListener(initialControl);
         JPanel createButtonBuffer = new JPanel();
         createButtonBuffer.add(createButton);
 

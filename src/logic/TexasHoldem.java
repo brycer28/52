@@ -22,8 +22,6 @@ public class TexasHoldem {
     private boolean validOption;
     private boolean validRaise;
     private Options playerOption;
-    private Options dealerOption;
-    private boolean gameRunning = true;
     private GameServer server;
     private ArrayList<User> players = new ArrayList<>();
 
@@ -38,12 +36,14 @@ public class TexasHoldem {
     public void startGame() {
         resetGame();
 
-        server.broadcast(new GameMessage<>(MessageType.START_GAME, new GameState())); // need fixes to make this functional
-    
-        playRound();
+        // set up initial game state - initialize users using their account balance
+
+//        server.sendToAllClients(new GameMessage<>(MessageType.START_GAME, new GameState())); // need fixes to make this functional
+
+//        playRound();
     }
 
-    public void playRound() {
+    public void playRound() throws IOException {
         // ############## Pre-Flop ####################
 
         for (User user : players) {
@@ -52,7 +52,7 @@ public class TexasHoldem {
         }
         
         // broadcast new game state to update client views
-        server.broadcast(new GameMessage<>(MessageType.STATE_UPDATE, new GameState(this.getGameState()))); 
+        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
 
         // execute one betting round (pre-flop) - end of betting round should broadcast state update again to update pot, bet, etc
         executeBettingRound();  
@@ -63,7 +63,7 @@ public class TexasHoldem {
             communityCards.dealCard(deck);
         }
 
-        server.broadcast(new GameMessage<>(MessageType.STATE_UPDATE, new GameState(this.getGameState()))); 
+        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
 
         executeBettingRound();
 
@@ -71,7 +71,7 @@ public class TexasHoldem {
 
         communityCards.dealCard(deck);
 
-        server.broadcast(new GameMessage<>(MessageType.STATE_UPDATE, new GameState(this.getGameState()))); 
+        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
 
         executeBettingRound();
 
@@ -79,7 +79,7 @@ public class TexasHoldem {
 
         communityCards.dealCard(deck);
 
-        server.broadcast(new GameMessage<>(MessageType.STATE_UPDATE, new GameState(this.getGameState()))); 
+        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
 
         executeBettingRound();
 
@@ -258,16 +258,25 @@ public class TexasHoldem {
     }
 
     // getters and setters
+    public GameState getGameState() {
+        return new GameState(
+                this.getPlayerList(),
+                this.getCommunityCards(),
+                this.getPot(),
+                this.getCurrentBet()
+        );
+    }
+
     public Hand getCommunityCards() { return communityCards; }
     public TexasHoldemPanel getTexasHoldemPanel() { return GUI; }
     public int getPot() { return pot; }
     public int getCurrentBet() { return currentBet; }
-    public Options getPlayerOption() { return playerOption; }
-    public Options getDealerOption() { return dealerOption; }
+    public int getRaiseAmount() { return raiseAmount; }
+    public ArrayList<User> getPlayerList() { return players; }
+
     public void setPlayerOption(Options playerOption) {
         this.playerOption = playerOption;
         latch.countDown();
     }
-    public int getRaiseAmount() { return raiseAmount; }
     public void setRaiseAmount(int raiseAmount) { this.raiseAmount = raiseAmount; }
 }

@@ -6,9 +6,7 @@ import logic.GameMessage;
 import logic.GameState;
 import logic.TexasHoldem.*;
 import ocsf.client.AbstractClient;
-
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Acts as the main controller for the client-side application.
@@ -16,12 +14,17 @@ import java.util.List;
  */
 
 public class GameClient extends AbstractClient {
-    private LoginControl loginControl;
-    private CreateAccountControl createAccountControl;
-    private MainGameFrame view;
-
-    public GameClient(String host, int port) {
+    public GameClient(String host, int port) throws IOException {
         super(host, port);
+        openConnection();
+
+//        try {
+//            openConnection();
+//            System.out.println("Connected to server at " + host + ":" + port);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.exit(1); // may cause issues!!!?!?!
+//        }
     }
 
     @Override
@@ -30,6 +33,16 @@ public class GameClient extends AbstractClient {
             GameMessage gameMessage = (GameMessage) msg;
 
             switch (gameMessage.getType()) {
+                case LOGIN -> {
+                    // try to login by sending request to database
+
+                    // view.getLoginControl.success() ??
+                }
+                case CREATE_ACC -> {
+                    // try to create account by requesting database
+
+                    // view.getCreateAccControl.success() ??
+                }
                 case START_GAME -> {
                     GameState gs = (GameState) gameMessage.getData();
                     // updateGameState(gs);
