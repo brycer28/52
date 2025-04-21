@@ -1,6 +1,5 @@
 package account;
 import javax.swing.*;
-
 import client.GameClient;
 import client.MainGameFrame;
 import client.MainGameFrame.*;
@@ -12,7 +11,7 @@ import java.awt.event.ActionListener;
 
 public class LoginControl implements ActionListener {
     private MainGameFrame frame;
-    private client.GameClient client;
+    private GameClient client;
 
     public LoginControl(MainGameFrame frame, GameClient client) {
         this.frame = frame;
@@ -21,13 +20,13 @@ public class LoginControl implements ActionListener {
 
     public void actionPerformed(ActionEvent action) {
         String command = action.getActionCommand();
-
         if (command.equals("Cancel")) {
 
             frame.setPanel(View.INITIAL);
         }
         else if (command.equals("Login")) {
-            LoginPanel loginPanel = (LoginPanel) frame.getCardPanel().getComponent(2);
+            LoginPanel loginPanel = (LoginPanel) frame.getCardPanel().getComponent(1);
+            assert loginPanel != null;
             LoginData loginData = new LoginData(loginPanel.getUsername(), loginPanel.getPassword());
 
             if (loginData.getUsername().isBlank()|| loginData.getPassword().isBlank()) {
@@ -52,6 +51,5 @@ public class LoginControl implements ActionListener {
     // not sure about this ?
     public void success() {
         frame.setPanel(View.GAME);
-        System.out.println("success");
     }
 }

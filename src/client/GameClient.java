@@ -49,7 +49,8 @@ public class GameClient extends AbstractClient {
                     // try to log in by sending request to database
                     if (gameMessage.getData() instanceof LoginData) {
                         // view.getLoginControl.success() ??
-                        loginControl.success();
+                        System.out.println("success");
+                        //loginControl.success();
                     }
                     else if (gameMessage.getData() instanceof Error) {
                         //display error if occurred
