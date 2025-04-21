@@ -7,8 +7,7 @@ public class StatsPanel extends JPanel {
     private JLabel potLabel;
     private JLabel betLabel;
     private JLabel playerChipsLabel;
-    private JLabel dealerChipsLabel;
-    private JLabel dealerDecisionLabel;
+
 
     public StatsPanel() {
         initUI();
@@ -23,22 +22,19 @@ public class StatsPanel extends JPanel {
         potLabel = new JLabel("Current Pot: 0");
         betLabel = new JLabel("Current Bet: 0");
         playerChipsLabel = new JLabel("Player Chips: 0");
-        dealerChipsLabel = new JLabel("Dealer Chips: 0");
-        dealerDecisionLabel = new JLabel("Dealer Option: None");
+
 
         // Optionally, center-align text
         potLabel.setHorizontalAlignment(SwingConstants.CENTER);
         betLabel.setHorizontalAlignment(SwingConstants.CENTER);
         playerChipsLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        dealerChipsLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        dealerDecisionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
 
         // Add labels to the panel
         add(potLabel);
         add(betLabel);
         add(playerChipsLabel);
-        add(dealerChipsLabel);
-        add(dealerDecisionLabel);
+
     }
 
     /**
@@ -47,14 +43,11 @@ public class StatsPanel extends JPanel {
      * @param pot The current pot amount.
      * @param bet The current bet amount.
      * @param playerChips The player's chip count.
-     * @param dealerChips The dealer's chip count.
-     * @param dealerDecision The dealer's current decision.
      */
-    public void updateStats(int pot, int bet, int playerChips, int dealerChips, String dealerDecision) {
+    public void updateStats(int pot, int bet, int playerChips) {
         potLabel.setText("Current Pot: " + pot);
         betLabel.setText("Current Bet: " + bet);
         playerChipsLabel.setText("Player Chips: " + playerChips);
-        dealerChipsLabel.setText("Dealer Chips: " + dealerChips);
-        dealerDecisionLabel.setText("Dealer Option: " + dealerDecision);
+
     }
 }

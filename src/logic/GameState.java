@@ -11,6 +11,7 @@ public class GameState {
     private int pot;
     private int currentBet;
 
+
     public enum GamePhase {
         PRE_FLOP, FLOP, TURN, RIVER, SHOWDOWN, END
     }
@@ -20,6 +21,7 @@ public class GameState {
         this.communityCards = communityCards;
         this.pot = pot;
         this.currentBet = currentBet;
+
     }
 
     // Getters
@@ -27,4 +29,5 @@ public class GameState {
     public Hand getCommunityCards() { return communityCards; }
     public int getPot() { return pot; }
     public int getCurrentBet() { return currentBet; }
+
 }
