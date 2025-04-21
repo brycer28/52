@@ -74,4 +74,8 @@ public class TexasHoldemPanel extends JPanel {
         playerHandPanel.revalidate();
         playerHandPanel.repaint();
     }
+
+    public void resetGUI() {
+
+    }
 }

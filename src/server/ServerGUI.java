@@ -22,8 +22,6 @@ public class ServerGUI extends JFrame {
 
         server = new GameServer(PORT);
         database = new DatabaseClass();
-        database.setConnection("src/server/db.properties");
-        server.setDatabase(database);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -56,6 +54,14 @@ public class ServerGUI extends JFrame {
         buttonPanel.add(stopButton);
 
 
+        if (database.getConnection() != null) {
+            logArea.append("Database connection established\n");
+        }
+        else {
+            logArea.append("Database connection not established\n");
+        }
+
+
         // configure ServerGUI layout
         this.setLayout(new BorderLayout());
         this.add(userCountPanel, BorderLayout.NORTH);
@@ -73,12 +79,15 @@ public class ServerGUI extends JFrame {
         if (server != null) {
             try {
                 server.close();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         // open server to listening for clients
         try {
             server = new GameServer(PORT);
+            server.setDatabase(database);
             server.listen();
 
             startButton.setEnabled(false);

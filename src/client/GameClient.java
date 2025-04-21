@@ -22,13 +22,13 @@ public class GameClient extends AbstractClient {
         super(host, port);
        // openConnection();
 
-        try {
-            openConnection();
-            System.out.println("Connected to server at " + host + ":" + port);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1); // may cause issues!!!?!?!
-        }
+//        try {
+//            openConnection();
+//            System.out.println("Connected to server at " + host + ":" + port);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.exit(1); // may cause issues!!!?!?!
+//        }
     }
 
     public void setLoginControl(LoginControl loginControl) {
@@ -51,21 +51,21 @@ public class GameClient extends AbstractClient {
                     if (gameMessage.getData() instanceof LoginData) {
                         // view.getLoginControl.success() ??
                         //loginControl.success();
-                        loginControl.displayError("Login Success"); // not an error, just need a dialogue box to appear
+                        loginControl.displayMessageWindow("Login Success");
                     }
-                    else if (gameMessage.getData() instanceof Error) {
+                    else if (gameMessage.getData() == null) {
                         //display error if occurred
-                        loginControl.displayError("The username or password is incorrect");
+                        loginControl.displayMessageWindow("The username or password is incorrect");
                     }
                 }
                 case CREATE_ACC -> {
                     if (gameMessage.getData() instanceof CreateAccountData) {
                         // view.getLoginControl.success() ??
-                        loginControl.success();
+                        createAccountControl.displayMessageWindow("Account Created Successfully! Return to login page to log in");
                     }
                     else if (gameMessage.getData() instanceof Error) {
                         //display error if occurred
-                        loginControl.displayError("The username or password is incorrect"); // placeholder
+                        createAccountControl.displayMessageWindow("The username is already in use");
                     }
                 }
                 case START_GAME -> {

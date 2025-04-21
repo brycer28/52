@@ -34,7 +34,16 @@ public class LoginControl implements ActionListener {
 
             try {
                 GameMessage<LoginData> msg = new GameMessage<>(GameMessage.MessageType.LOGIN, loginData);
-                client.sendToServer(msg);
+
+                if (!client.isConnected()) {
+                    System.out.println("Client is not connected. Opening client connection now...");
+                    client.openConnection();
+                }
+                else {
+                    System.out.println("Client is connected. Sending to server");
+                    System.out.println(loginData.getPassword());
+                    client.sendToServer(msg);
+                }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
                 e.printStackTrace();
@@ -42,8 +51,8 @@ public class LoginControl implements ActionListener {
         }
     }
 
-    public void displayError(String message) {
-        JOptionPane.showMessageDialog(null, message);
+    public void displayMessageWindow(String message) {
+        JOptionPane.showMessageDialog(frame, message);
     }
 
     // not sure about this ?

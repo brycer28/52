@@ -47,6 +47,13 @@ public class CreateAccountControl implements ActionListener {
 
             try {
                 GameMessage<CreateAccountData> msg = new GameMessage<>(GameMessage.MessageType.CREATE_ACC, data);
+                if (!client.isConnected()) {
+                    client.openConnection();
+                }
+                else {
+                    client.sendToServer(msg);
+
+                }
                 client.sendToServer(msg);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
@@ -55,6 +62,9 @@ public class CreateAccountControl implements ActionListener {
         }
     }
 
+    public void displayMessageWindow(String message) {
+        JOptionPane.showMessageDialog(frame, message);
+    }
     public void createAccountSuccess() {
         frame.setPanel(View.GAME);
     }
