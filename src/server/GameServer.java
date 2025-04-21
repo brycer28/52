@@ -91,7 +91,6 @@ public class GameServer extends AbstractServer {
             switch (gm.getType()) {
                 case LOGIN -> {
                     LoginData data = (LoginData) msg;
-
                     if (database.verifyAccount(data.getUsername(), data.getPassword())) {
                         try {
                             GameMessage <LoginData> loginResult = new GameMessage<>(GameMessage.MessageType.LOGIN, new LoginData("loginSuccessful",null));
@@ -119,7 +118,7 @@ public class GameServer extends AbstractServer {
 
                     if (database.createNewAccount(data.getUsername(), data.getPassword(), chipCount)) {
                         try {
-                            GameMessage <CreateAccountData> createResult = new GameMessage<>(GameMessage.MessageType.CREATE_ACC, new CreateAccountData("createAccountSuccessful", null));
+                            GameMessage <CreateAccountData> createResult = new GameMessage<>(GameMessage.MessageType.CREATE_ACC, new CreateAccountData(null, null));
                             client.sendToClient(createResult);
                         }
                         catch (IOException e) {
@@ -128,7 +127,7 @@ public class GameServer extends AbstractServer {
                     }
                     else {
                         try {
-                            GameMessage <Error> createResult = new GameMessage<>(GameMessage.MessageType.ERROR, new Error("createAccountFailed", null));
+                            GameMessage <Error> createResult = new GameMessage<>(GameMessage.MessageType.ERROR, new Error(null, null));
                             client.sendToClient(createResult);
                         }
                         catch (IOException e) {

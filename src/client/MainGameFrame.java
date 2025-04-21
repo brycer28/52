@@ -88,5 +88,6 @@ public class MainGameFrame extends JFrame {
 
     public JPanel getCardPanel() { return cardPanel; }
     public GameClient getClient() { return client; }
+
 }
 
