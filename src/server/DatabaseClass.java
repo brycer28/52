@@ -83,7 +83,7 @@ public class DatabaseClass {
                 + "WHERE username = '" + username + "';";
 
         // Stop if this account doesn't exist.
-        System.out.println("Loginsuccess");
+        System.out.println("Login success");
         return query(query) != null;
     }
 

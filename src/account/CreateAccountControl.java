@@ -26,11 +26,11 @@ public class CreateAccountControl implements ActionListener {
         }
 
         else if (command.equals("Create Account")) {
-            CreateAccountPanel createPanel = (CreateAccountPanel) frame.getComponent(3);
-            CreateAccountData loginData = new CreateAccountData(createPanel.getUsername(), createPanel.getPassword());
+            CreateAccountPanel createPanel = (CreateAccountPanel) frame.getCardPanel().getComponent(2);
+            CreateAccountData data = new CreateAccountData(createPanel.getUsername(), createPanel.getPassword());
 
             // validate create account credentials
-            if (loginData.getUsername().isBlank() || loginData.getPassword().isBlank()) {
+            if (data.getUsername().isBlank() || data.getPassword().isBlank()) {
                 JOptionPane.showMessageDialog(null, "Username and Password must not be empty");
                 return;
             }
@@ -46,7 +46,7 @@ public class CreateAccountControl implements ActionListener {
             }
 
             try {
-                GameMessage<CreateAccountData> msg = new GameMessage<>(GameMessage.MessageType.CREATE_ACC, loginData);
+                GameMessage<CreateAccountData> msg = new GameMessage<>(GameMessage.MessageType.CREATE_ACC, data);
                 client.sendToServer(msg);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
