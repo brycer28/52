@@ -14,7 +14,7 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 // need XAMPP to be running to run this test file
-public class IntegratedLoginTest {
+public class LoginTest {
 
     private LoginControl loginControl;
     private MainGameFrame frame;
