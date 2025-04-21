@@ -77,11 +77,8 @@ public class MainGameFrame extends JFrame {
     public void setPanel(View v) {
         switch (v) {
             case INITIAL -> cardLayout.show(cardPanel, "1");
-
             case LOGIN -> cardLayout.show(cardPanel, "2");
-
             case CREATE -> cardLayout.show(cardPanel, "3");
-
 //            case GAME -> cardLayout.show(cardPanel, "4");
         }
     }

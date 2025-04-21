@@ -85,9 +85,9 @@ public class GameServer extends AbstractServer {
     // Handles messages from clients (to be implemented)
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
+        System.out.println("handleMessageFromClient() called");
         if (msg instanceof GameMessage<?>) {
             GameMessage<?> gm = (GameMessage<?>) msg;
-
             switch (gm.getType()) {
                 case LOGIN -> {
                     LoginData data = (LoginData) msg;

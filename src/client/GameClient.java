@@ -20,15 +20,15 @@ public class GameClient extends AbstractClient {
 
     public GameClient(String host, int port) throws IOException {
         super(host, port);
-        openConnection();
+       // openConnection();
 
-//        try {
-//            openConnection();
-//            System.out.println("Connected to server at " + host + ":" + port);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.exit(1); // may cause issues!!!?!?!
-//        }
+        try {
+            openConnection();
+            System.out.println("Connected to server at " + host + ":" + port);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1); // may cause issues!!!?!?!
+        }
     }
 
     public void setLoginControl(LoginControl loginControl) {
@@ -41,6 +41,7 @@ public class GameClient extends AbstractClient {
 
     @Override
     protected void handleMessageFromServer(Object msg) {
+        System.out.println("handleMessageFromServer() called");
         if (msg instanceof GameMessage) {
             GameMessage gameMessage = (GameMessage) msg;
 
@@ -49,8 +50,8 @@ public class GameClient extends AbstractClient {
                     // try to log in by sending request to database
                     if (gameMessage.getData() instanceof LoginData) {
                         // view.getLoginControl.success() ??
-                        System.out.println("success");
                         //loginControl.success();
+                        loginControl.displayError("Login Success"); // not an error, just need a dialogue box to appear
                     }
                     else if (gameMessage.getData() instanceof Error) {
                         //display error if occurred
@@ -64,7 +65,7 @@ public class GameClient extends AbstractClient {
                     }
                     else if (gameMessage.getData() instanceof Error) {
                         //display error if occurred
-                        loginControl.displayError("The username or password is incorrect");
+                        loginControl.displayError("The username or password is incorrect"); // placeholder
                     }
                 }
                 case START_GAME -> {

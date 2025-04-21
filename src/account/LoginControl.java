@@ -4,10 +4,9 @@ import client.GameClient;
 import client.MainGameFrame;
 import client.MainGameFrame.*;
 import logic.GameMessage;
-
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 
 public class LoginControl implements ActionListener {
     private MainGameFrame frame;
@@ -26,7 +25,6 @@ public class LoginControl implements ActionListener {
         }
         else if (command.equals("Login")) {
             LoginPanel loginPanel = (LoginPanel) frame.getCardPanel().getComponent(1);
-            assert loginPanel != null;
             LoginData loginData = new LoginData(loginPanel.getUsername(), loginPanel.getPassword());
 
             if (loginData.getUsername().isBlank()|| loginData.getPassword().isBlank()) {
@@ -39,7 +37,7 @@ public class LoginControl implements ActionListener {
                 client.sendToServer(msg);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
-                e.printStackTrace(); // Optional: helps with debugging if something goes wrong
+                e.printStackTrace();
             }
         }
     }
