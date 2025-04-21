@@ -17,7 +17,7 @@ public class DatabaseClass {
 
         //2. Open the db.properties with FileInputStream
         try {
-            fis = new FileInputStream("src/server/db.properties");
+            fis = new FileInputStream("lib/db.properties");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

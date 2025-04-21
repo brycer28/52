@@ -20,7 +20,6 @@ public class LoginControl implements ActionListener {
     public void actionPerformed(ActionEvent action) {
         String command = action.getActionCommand();
         if (command.equals("Cancel")) {
-
             frame.setPanel(View.INITIAL);
         }
         else if (command.equals("Login")) {
