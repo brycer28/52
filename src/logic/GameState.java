@@ -1,11 +1,12 @@
 package logic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import account.User;
 import cards.Hand;
 
-public class GameState {
+public class GameState implements Serializable {
     private ArrayList<User> players;
     private Hand communityCards;
     private int pot;
@@ -21,7 +22,6 @@ public class GameState {
         this.communityCards = communityCards;
         this.pot = pot;
         this.currentBet = currentBet;
-
     }
 
     // Getters

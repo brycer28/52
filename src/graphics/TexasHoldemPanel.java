@@ -2,6 +2,7 @@ package graphics;
 
 import graphics.panels.StatsPanel;
 import graphics.panels.gameplay.CardPanel;
+import logic.GameControl;
 import logic.GameState;
 import account.User;
 
@@ -26,10 +27,8 @@ public class TexasHoldemPanel extends JPanel {
     private final int STATS_WIDTH = 200;
     private final int STATS_HEIGHT = 100;
 
-    public TexasHoldemPanel(GameState gameState, User user) {
+    public TexasHoldemPanel(GameControl gc) {
         super();
-        this.gameState = gameState;
-        this.user = user;
 
         setLayout(null);
         setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
@@ -37,7 +36,7 @@ public class TexasHoldemPanel extends JPanel {
 
         initPlayerHand();
         initStatsPanel();
-        updateFromGameState(gameState, user);
+//        updateFromGameState();
     }
 
     private void initPlayerHand() {

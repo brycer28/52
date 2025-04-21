@@ -1,12 +1,16 @@
 package client;
+import cards.Card;
+import cards.Hand;
 import graphics.*;
 import javax.swing.*;
 import account.*;
+import logic.GameControl;
 import logic.GameMessage;
 import logic.GameState;
 import logic.TexasHoldem.*;
 import ocsf.client.AbstractClient;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Acts as the main controller for the client-side application.
@@ -14,30 +18,30 @@ import java.io.IOException;
  */
 
 public class GameClient extends AbstractClient {
-
+    private InitialControl initialControl;
     private LoginControl loginControl;
     private CreateAccountControl createAccountControl;
+    private GameControl gameControl;
 
     public GameClient(String host, int port) throws IOException {
         super(host, port);
        // openConnection();
 
-//        try {
-//            openConnection();
-//            System.out.println("Connected to server at " + host + ":" + port);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.exit(1); // may cause issues!!!?!?!
-//        }
+        try {
+            openConnection();
+            System.out.println("Connected to server at " + host + ":" + port);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1); // may cause issues!!!?!?!
+        }
     }
 
+    public void setInitialControl(InitialControl initialControl) { this.initialControl = initialControl; }
     public void setLoginControl(LoginControl loginControl) {
         this.loginControl = loginControl;
     }
-
-    public void setCreateAccountControl (CreateAccountControl createAccountControl) {
-        this.createAccountControl = createAccountControl;
-    }
+    public void setCreateAccountControl (CreateAccountControl createAccountControl) { this.createAccountControl = createAccountControl; }
+    public void setGameControl(GameControl gameControl) { this.gameControl = gameControl; }
 
     @Override
     protected void handleMessageFromServer(Object msg) {
@@ -47,20 +51,15 @@ public class GameClient extends AbstractClient {
 
             switch (gameMessage.getType()) {
                 case LOGIN -> {
-                    // try to log in by sending request to database
                     if (gameMessage.getData() instanceof LoginData) {
-                        // view.getLoginControl.success() ??
-                        //loginControl.success();
                         loginControl.displayMessageWindow("Successfully Logged in!");
                     }
                     else if (gameMessage.getData() instanceof Error) {
-                        //display error if occurred
                         loginControl.displayMessageWindow("The username or password is incorrect");
                     }
                 }
                 case CREATE_ACC -> {
                     if (gameMessage.getData() instanceof CreateAccountData) {
-                        // view.getLoginControl.success() ??
                         createAccountControl.displayMessageWindow("Account Created Successfully! Return to login page to log in");
                     }
                     else if (gameMessage.getData() instanceof Error) {
@@ -70,6 +69,11 @@ public class GameClient extends AbstractClient {
                 }
                 case START_GAME -> {
                     GameState gs = (GameState) gameMessage.getData();
+
+                    /*Card c1 = new Card(Card.Suit.CLUBS, Card.Rank.TEN);
+                    Hand cc = new Hand()*/
+                    gameControl.startGame();
+                    gameControl.resetGameGUI(gs);
                     // updateGameState(gs);
                 }
                 case NOTIFY_TURN -> {

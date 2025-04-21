@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import cards.Hand;
+import logic.GameState;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 import javax.swing.*;
@@ -99,8 +102,13 @@ public class GameServer extends AbstractServer {
                             GameMessage <LoginData> loginResult = new GameMessage<>(GameMessage.MessageType.LOGIN, new LoginData("loginSuccessful",null));
                             client.sendToClient(loginResult);
                             handleSuccessfulLogin(client);
-                        }
-                        catch (IOException e) {
+
+                            User u = new User("brycer", 500);
+                            ArrayList<User> users = new ArrayList<User>();
+                            GameState gs = new GameState(users, new Hand(), 0,0);
+
+                            sendToAllClients(new GameMessage(GameMessage.MessageType.START_GAME, gs));
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
@@ -109,8 +117,7 @@ public class GameServer extends AbstractServer {
                             GameMessage<Error> loginResult = new GameMessage<>(GameMessage.MessageType.LOGIN, new Error());
                             System.out.println("loginUnsuccessful");
                             client.sendToClient(loginResult);
-                        }
-                        catch (IOException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
