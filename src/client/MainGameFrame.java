@@ -24,9 +24,20 @@ public class MainGameFrame extends JFrame {
     private GameClient client;
     private static final int PORT = 8300;
 
-    public MainGameFrame(GameClient client) {
+    public MainGameFrame() {
         super("Texas Hold'em"); // Set window title
-        this.client = client;
+        GameClient client = null;
+        try {
+            client = new GameClient("localhost", PORT);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            client.openConnection();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         // Initialize layout and card panel
         cardLayout = new CardLayout();
@@ -63,15 +74,16 @@ public class MainGameFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            GameClient client = null;
-            try {
-                client = new GameClient("localhost", PORT);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            new MainGameFrame(client);
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            GameClient client = null;
+//            try {
+//                client = new GameClient("localhost", PORT);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            new MainGameFrame(client);
+//        });
+        new MainGameFrame();
     }
 
     public void setPanel(View v) {

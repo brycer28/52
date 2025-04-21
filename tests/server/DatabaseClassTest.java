@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 
 public class DatabaseClassTest {
 
-    private String[] users = {"jsmith@uca.edu","msmith@uca.edu","tjones@yahoo.com","jjones@yahoo.com"};
-    private String[] passwords = {"hello123","pass123","123456","hello1234"};
+    private String[] users = {"thi","bryce","cali","michael", "kendal"};
+    private String[] passwords = {"thi123","bryce123","cali123","michael123","kendal123"};
     private DatabaseClass db;
     private int rando;
     private Connection conn;
@@ -16,13 +16,11 @@ public class DatabaseClassTest {
     @Before
     public void setUp() throws Exception {
         db = new DatabaseClass();
-        db.setConnection("src/server/db.properties");
         rando = ((int) (Math.random() * users.length));
     }
 
     @Test
     public void testSetConnection() {
-        db.setConnection("src/server/db.properties");
         Connection conn = db.getConnection();
         assertNotNull(conn);
     }
@@ -42,18 +40,15 @@ public class DatabaseClassTest {
     @Test
     public void testExecuteDML() {
 
-        //1. set connection
-        db.setConnection("lab8out/db.properties");
-
         //2. get connection
         Connection conn = db.getConnection();
 
         //3. build a DML statement that will insert a new username with any desired password.
-        String username = "'thuynh5@uca.edu'";
+        String username = "'databaseTest'";
         String password = "'UCAbears'";
 
         String dml = "INSERT INTO users "
-                + "VALUES (" + username + ", aes_encrypt(" + password + ", 'key'));";
+                + "VALUES (" + username + ", aes_encrypt(" + password + ", 'key'), 500);";
 
         try {
             db.executeDML(dml);

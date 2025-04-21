@@ -90,8 +90,11 @@ public class GameServer extends AbstractServer {
             GameMessage<?> gm = (GameMessage<?>) msg;
             switch (gm.getType()) {
                 case LOGIN -> {
-                    LoginData data = (LoginData) msg;
+                    LoginData data = (LoginData) ((GameMessage<?>) msg).getData();
+                    System.out.println(data.getUsername() + "\n" + data.getPassword());
+
                     if (database.verifyAccount(data.getUsername(), data.getPassword())) {
+                        System.out.println("LOGIN VERIFIED");
                         try {
                             GameMessage <LoginData> loginResult = new GameMessage<>(GameMessage.MessageType.LOGIN, new LoginData("loginSuccessful",null));
                             client.sendToClient(loginResult);
@@ -103,7 +106,8 @@ public class GameServer extends AbstractServer {
                     }
                     else {
                         try {
-                            GameMessage <Error> loginResult = new GameMessage<>(GameMessage.MessageType.ERROR, new Error("loginUnsuccessful", null));
+                            GameMessage <Error> loginResult = new GameMessage<>(GameMessage.MessageType.ERROR, null);
+                            System.out.println("loginUnsuccessful");
                             client.sendToClient(loginResult);
                         }
                         catch (IOException e) {
@@ -114,7 +118,8 @@ public class GameServer extends AbstractServer {
                 }
 
                 case CREATE_ACC -> {
-                    CreateAccountData data = (CreateAccountData) msg;
+                    System.out.println("CASE CREATE_ACC REACHED");
+                    CreateAccountData data = (CreateAccountData) ((GameMessage<?>) msg).getData();
 
                     if (database.createNewAccount(data.getUsername(), data.getPassword(), chipCount)) {
                         try {

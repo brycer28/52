@@ -43,6 +43,7 @@ public class LoginPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
+
         add(buttonPanel, gbc);
     }
 
@@ -51,6 +52,7 @@ public class LoginPanel extends JPanel {
     }
 
     public String getPassword() {
-        return Arrays.toString(passwordField.getPassword()); // getPassword returns a char[]
+        //return Arrays.toString(passwordField.getPassword()); // getPassword returns a char[]
+        return new String(passwordField.getPassword());
     }
 }

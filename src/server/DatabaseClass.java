@@ -9,7 +9,7 @@ public class DatabaseClass {
 
     private Connection conn;
 
-    public void setConnection(String fn) {
+    public DatabaseClass() {
 
         //1. Create a properties object
         Properties prop = new Properties();
@@ -17,7 +17,7 @@ public class DatabaseClass {
 
         //2. Open the db.properties with FileInputStream
         try {
-            fis = new FileInputStream(fn);
+            fis = new FileInputStream("src/server/db.properties");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -51,7 +51,6 @@ public class DatabaseClass {
                 + "FROM users "
                 + "WHERE username = '" + username + "';";
 
-
         // Stop if this account already exists.
         if (query(query) != null) {
             return false;
@@ -83,8 +82,13 @@ public class DatabaseClass {
                 + "WHERE username = '" + username + "';";
 
         // Stop if this account doesn't exist.
-        System.out.println("Login success");
-        return query(query) != null;
+        if (query(query) == null)
+            return false;
+
+        String db_password = query(query).getFirst().split(",")[1];
+
+        // Check the username and password.
+        return password.equals(db_password);
     }
 
     public ArrayList<String> query(String query)
