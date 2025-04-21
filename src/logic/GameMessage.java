@@ -15,6 +15,7 @@ import java.io.Serializable;
  *
  * LOGIN_SUCCESS: new GameMessage(mt=LOGIN_SUCCESS
  *
+
  * START_GAME: new GameMessage(mt=START_TURN, data=GameState)
  *  - Transmit and initial GameState object to start a game
  * 

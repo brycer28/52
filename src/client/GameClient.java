@@ -1,4 +1,5 @@
 package client;
+
 import cards.Card;
 import cards.Hand;
 import graphics.*;
@@ -12,6 +13,7 @@ import ocsf.client.AbstractClient;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
 /**
  * Acts as the main controller for the client-side application.
  * Mediates between the UI (MainGameFrame) and network logic (PlayerClient).
@@ -22,6 +24,7 @@ public class GameClient extends AbstractClient {
     private LoginControl loginControl;
     private CreateAccountControl createAccountControl;
     private GameControl gameControl;
+
 
     public GameClient(String host, int port) throws IOException {
         super(host, port);
@@ -43,6 +46,7 @@ public class GameClient extends AbstractClient {
     public void setCreateAccountControl (CreateAccountControl createAccountControl) { this.createAccountControl = createAccountControl; }
     public void setGameControl(GameControl gameControl) { this.gameControl = gameControl; }
 
+
     @Override
     protected void handleMessageFromServer(Object msg) {
         System.out.println("handleMessageFromServer() called");
@@ -51,10 +55,12 @@ public class GameClient extends AbstractClient {
 
             switch (gameMessage.getType()) {
                 case LOGIN -> {
+
                     if (gameMessage.getData() instanceof LoginData) {
                         loginControl.displayMessageWindow("Successfully Logged in!");
                     }
                     else if (gameMessage.getData() instanceof Error) {
+
                         loginControl.displayMessageWindow("The username or password is incorrect");
                     }
                 }
@@ -74,6 +80,7 @@ public class GameClient extends AbstractClient {
                     Hand cc = new Hand()*/
                     gameControl.startGame();
                     gameControl.resetGameGUI(gs);
+
                     // updateGameState(gs);
                 }
                 case NOTIFY_TURN -> {
