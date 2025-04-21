@@ -8,6 +8,7 @@ import account.*;
 import graphics.TexasHoldemPanel;
 import logic.GameControl;
 
+
 public class MainGameFrame extends JFrame {
     private JPanel cardPanel;         // The container for all panels (CardLayout)
     private CardLayout cardLayout;    // Layout manager
@@ -28,6 +29,7 @@ public class MainGameFrame extends JFrame {
     public MainGameFrame() {
         super("Texas Hold'em"); // Set window title
         client = null;
+
 
         try {
             client = new GameClient("localhost", PORT);
@@ -56,6 +58,7 @@ public class MainGameFrame extends JFrame {
         client.setCreateAccountControl(cc);
         client.setGameControl(gc);
 
+
         //Views
         initialPanel = new InitialPanel(ic);
         loginPanel = new LoginPanel(lc);
@@ -69,6 +72,7 @@ public class MainGameFrame extends JFrame {
 
         // Select which panel to show first
         cardLayout.show(cardPanel, "0");
+
 
         // Set the card panel as the content pane of the JFrame
         this.setContentPane(cardPanel);

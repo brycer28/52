@@ -1,12 +1,14 @@
 package logic;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 
 import account.User;
 import cards.Hand;
 
 public class GameState implements Serializable {
+
     private ArrayList<User> players;
     private Hand communityCards;
     private int pot;
