@@ -106,7 +106,7 @@ public class GameServer extends AbstractServer {
                     }
                     else {
                         try {
-                            GameMessage <Error> loginResult = new GameMessage<>(GameMessage.MessageType.ERROR, null);
+                            GameMessage<Error> loginResult = new GameMessage<>(GameMessage.MessageType.LOGIN, new Error());
                             System.out.println("loginUnsuccessful");
                             client.sendToClient(loginResult);
                         }
@@ -132,7 +132,7 @@ public class GameServer extends AbstractServer {
                     }
                     else {
                         try {
-                            GameMessage <Error> createResult = new GameMessage<>(GameMessage.MessageType.ERROR, new Error(null, null));
+                            GameMessage <Error> createResult = new GameMessage<>(GameMessage.MessageType.CREATE_ACC, new Error());
                             client.sendToClient(createResult);
                         }
                         catch (IOException e) {
