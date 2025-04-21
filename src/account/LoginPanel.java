@@ -50,9 +50,13 @@ public class LoginPanel extends JPanel {
     public String getUsername() {
         return username.getText();
     }
-
+    public JTextField getUsernameField() {
+        return username;
+    }
+    public JPasswordField getPasswordField() {
+        return passwordField;
+    }
     public String getPassword() {
-        //return Arrays.toString(passwordField.getPassword()); // getPassword returns a char[]
         return new String(passwordField.getPassword());
     }
 }

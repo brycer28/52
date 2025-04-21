@@ -35,11 +35,9 @@ public class LoginControl implements ActionListener {
                 GameMessage<LoginData> msg = new GameMessage<>(GameMessage.MessageType.LOGIN, loginData);
 
                 if (!client.isConnected()) {
-                    System.out.println("Client is not connected. Opening client connection now...");
                     client.openConnection();
                 }
                 else {
-                    System.out.println("Client is connected. Sending to server");
                     client.sendToServer(msg);
                 }
             } catch (Exception e) {
@@ -53,6 +51,9 @@ public class LoginControl implements ActionListener {
         JOptionPane.showMessageDialog(frame, message);
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
     // not sure about this ?
     public void success() {
         frame.setPanel(View.GAME);

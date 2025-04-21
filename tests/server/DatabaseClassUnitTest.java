@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import static org.junit.Assert.*;
 
-public class DatabaseClassTest {
+public class DatabaseClassUnitTest {
 
     private String[] users = {"thi","bryce","cali","michael", "kendal"};
     private String[] passwords = {"thi123","bryce123","cali123","michael123","kendal123"};
