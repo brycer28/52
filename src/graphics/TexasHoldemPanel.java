@@ -11,7 +11,7 @@ import java.util.List;
 
 import cards.Card;
 
-public class TexasHoldemPanel extends JPanel {
+public class    TexasHoldemPanel extends JPanel {
     private GameState gameState;
     private User user;
 
