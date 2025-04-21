@@ -44,7 +44,7 @@ public class DatabaseClass {
         return conn;
     }
 
-    public boolean createNewAccount(String username, String password){
+    public boolean createNewAccount(String username, String password, int chipCount){
         // Read the database file.
         String key = "'Key'";
         String query = "SELECT username "
@@ -60,7 +60,7 @@ public class DatabaseClass {
         // Add the new account.
         String insert = "INSERT INTO users "
                 + "VALUES ('"
-                + username + "', aes_encrypt('" + password + "', " + key + "));";
+                + username + "', aes_encrypt('" + password + "', " + key + "), " + chipCount +");";
 
         // Write the username to the database.
         try {
@@ -83,6 +83,7 @@ public class DatabaseClass {
                 + "WHERE username = '" + username + "';";
 
         // Stop if this account doesn't exist.
+        System.out.println("Loginsuccess");
         return query(query) != null;
     }
 

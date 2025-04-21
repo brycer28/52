@@ -36,20 +36,24 @@ public class MainGameFrame extends JFrame {
         InitialControl ic = new InitialControl(this);
         LoginControl lc = new LoginControl(this, client);
         CreateAccountControl cc = new CreateAccountControl(this, client);
+        client.setLoginControl(lc);
+        client.setCreateAccountControl(cc);
 
         //Views
         initialPanel = new InitialPanel(ic);
         loginPanel = new LoginPanel(lc);
         createAccountPanel = new CreateAccountPanel(cc);
+
+
 //        gamePanel = new TexasHoldemPanel(); // this should take in a GameState
 
-        cardPanel.add(initialPanel, "initialPanel");
-        cardPanel.add(loginPanel, "loginPanel");
-        cardPanel.add(createAccountPanel, "createAccountPanel");
-//        cardPanel.add(gamePanel, "gamePanel");
+        cardPanel.add(initialPanel, "1");
+        cardPanel.add(loginPanel, "2");
+        cardPanel.add(createAccountPanel, "3");
+//        cardPanel.add(gamePanel, "4");
 
         // Select which panel to show first
-        cardLayout.show(cardPanel, "initPanel");
+        cardLayout.show(cardPanel, "1");
 
         // Set the card panel as the content pane of the JFrame
         this.setContentPane(cardPanel);
@@ -72,13 +76,13 @@ public class MainGameFrame extends JFrame {
 
     public void setPanel(View v) {
         switch (v) {
-            case INITIAL -> cardLayout.show(cardPanel, "initialPanel");
+            case INITIAL -> cardLayout.show(cardPanel, "1");
 
-            case CREATE -> cardLayout.show(cardPanel, "createAccountPanel");
+            case LOGIN -> cardLayout.show(cardPanel, "2");
 
-            case LOGIN -> cardLayout.show(cardPanel, "loginPanel");
+            case CREATE -> cardLayout.show(cardPanel, "3");
 
-//            case GAME -> cardLayout.show(cardPanel, "gamePanel");
+//            case GAME -> cardLayout.show(cardPanel, "4");
         }
     }
 

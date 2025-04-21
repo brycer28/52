@@ -4,6 +4,7 @@ package server;
  * and updates the server GUI with the number of authenticated and unauthenticated users.
  */
 
+import account.CreateAccountData;
 import account.LoginData;
 import account.User;
 
@@ -22,6 +23,7 @@ public class GameServer extends AbstractServer {
     private int unauthenticatedUsers = 0;
     private int authenticatedUsers = 0;
     private DatabaseClass database;
+    private int chipCount = 500;
 
     // Text areas in the GUI for showing user counts
 
@@ -89,13 +91,12 @@ public class GameServer extends AbstractServer {
             switch (gm.getType()) {
                 case LOGIN -> {
                     LoginData data = (LoginData) msg;
-                    LoginData message = new LoginData("loginSuccessful", null);
-                    //Error result = null;
 
                     if (database.verifyAccount(data.getUsername(), data.getPassword())) {
                         try {
-                            GameMessage <LoginData> loginResult = new GameMessage<>(GameMessage.MessageType.LOGIN, message);
+                            GameMessage <LoginData> loginResult = new GameMessage<>(GameMessage.MessageType.LOGIN, new LoginData("loginSuccessful",null));
                             client.sendToClient(loginResult);
+                            handleSuccessfulLogin(client);
                         }
                         catch (IOException e) {
                             e.printStackTrace();
@@ -105,6 +106,30 @@ public class GameServer extends AbstractServer {
                         try {
                             GameMessage <Error> loginResult = new GameMessage<>(GameMessage.MessageType.ERROR, new Error("loginUnsuccessful", null));
                             client.sendToClient(loginResult);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+
+                case CREATE_ACC -> {
+                    CreateAccountData data = (CreateAccountData) msg;
+
+                    if (database.createNewAccount(data.getUsername(), data.getPassword(), chipCount)) {
+                        try {
+                            GameMessage <CreateAccountData> createResult = new GameMessage<>(GameMessage.MessageType.CREATE_ACC, new CreateAccountData("createAccountSuccessful", null));
+                            client.sendToClient(createResult);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        try {
+                            GameMessage <Error> createResult = new GameMessage<>(GameMessage.MessageType.ERROR, new Error("createAccountFailed", null));
+                            client.sendToClient(createResult);
                         }
                         catch (IOException e) {
                             e.printStackTrace();

@@ -14,12 +14,16 @@ public class ServerGUI extends JFrame {
     private JButton stopButton;
 
     private GameServer server;
+    private DatabaseClass database;
     private final int PORT = 8300;
 
     public ServerGUI() {
         super("Texas Hold'em Server");
 
         server = new GameServer(PORT);
+        database = new DatabaseClass();
+        database.setConnection("src/server/db.properties");
+        server.setDatabase(database);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());

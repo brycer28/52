@@ -23,15 +23,14 @@ public class LoginControl implements ActionListener {
         String command = action.getActionCommand();
 
         if (command.equals("Cancel")) {
-            CardLayout cardLayout = (CardLayout) frame.getLayout();
-            cardLayout.show(frame, "initialPanel");
-            //frame.setPanel(View.INITIAL);
+
+            frame.setPanel(View.INITIAL);
         }
         else if (command.equals("Login")) {
             LoginPanel loginPanel = (LoginPanel) frame.getCardPanel().getComponent(2);
             LoginData loginData = new LoginData(loginPanel.getUsername(), loginPanel.getPassword());
 
-            if (loginData.getUsername().equals("") || loginData.getPassword().equals("")) {
+            if (loginData.getUsername().isBlank()|| loginData.getPassword().isBlank()) {
                 JOptionPane.showMessageDialog(null, "Username and Password must not be empty");
                 return;
             }
@@ -49,8 +48,10 @@ public class LoginControl implements ActionListener {
     public void displayError(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
+
     // not sure about this ?
     public void success() {
         frame.setPanel(View.GAME);
+        System.out.println("success");
     }
 }

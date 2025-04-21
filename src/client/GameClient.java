@@ -57,10 +57,13 @@ public class GameClient extends AbstractClient {
                     }
                 }
                 case CREATE_ACC -> {
-                    // try to create account by requesting database
-                    if (msg.equals("createAccountSuccessful")) {
-                        // view.getCreateAccControl.success() ??
-                        createAccountControl.createAccountSuccess();
+                    if (gameMessage.getData() instanceof CreateAccountData) {
+                        // view.getLoginControl.success() ??
+                        loginControl.success();
+                    }
+                    else if (gameMessage.getData() instanceof Error) {
+                        //display error if occurred
+                        loginControl.displayError("The username or password is incorrect");
                     }
                 }
                 case START_GAME -> {
