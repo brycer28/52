@@ -51,9 +51,9 @@ public class GameClient extends AbstractClient {
                     if (gameMessage.getData() instanceof LoginData) {
                         // view.getLoginControl.success() ??
                         //loginControl.success();
-                        loginControl.displayMessageWindow("Login Success");
+                        loginControl.displayMessageWindow("Successfully Logged in!");
                     }
-                    else if (gameMessage.getData() == null) {
+                    else if (gameMessage.getData() instanceof Error) {
                         //display error if occurred
                         loginControl.displayMessageWindow("The username or password is incorrect");
                     }

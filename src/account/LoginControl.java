@@ -41,7 +41,6 @@ public class LoginControl implements ActionListener {
                 }
                 else {
                     System.out.println("Client is connected. Sending to server");
-                    System.out.println(loginData.getPassword());
                     client.sendToServer(msg);
                 }
             } catch (Exception e) {

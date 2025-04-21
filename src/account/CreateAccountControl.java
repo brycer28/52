@@ -52,9 +52,7 @@ public class CreateAccountControl implements ActionListener {
                 }
                 else {
                     client.sendToServer(msg);
-
                 }
-                client.sendToServer(msg);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
                 e.printStackTrace(); // Optional but helpful for debugging
