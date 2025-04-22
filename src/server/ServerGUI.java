@@ -136,13 +136,6 @@ public class ServerGUI extends JFrame {
         });
     }
 
-    public void startGame() throws IOException {
-        ArrayList<User> players = new ArrayList<>(server.getClients().values());
-        GameState initialState = new GameState(players, new Hand(), 0,0,0, null);
-
-        server.sendToAllClients(new GameMessage<GameState>(GameMessage.MessageType.START_GAME, initialState));
-    }
-
     // Main method to launch the GUI
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ServerGUI::new);

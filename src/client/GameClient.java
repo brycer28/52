@@ -11,6 +11,7 @@ import logic.GameState;
 import logic.TexasHoldem.*;
 import ocsf.client.AbstractClient;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 
@@ -83,22 +84,24 @@ public class GameClient extends AbstractClient {
                     }
                 }
                 case START_GAME -> {
-                    System.out.println("startGame() called");
                     if (gameMessage.getData() instanceof GameState gs) {
                         System.out.println("startGame() called");
                         gameControl.startGame();
                         gameControl.resetGameGUI(gs, user);
                     }
-                    // updateGameState(gs);
                 }
                 case NOTIFY_TURN -> {
+                    System.out.println("notifyTurn() called");
                     gameControl.toggleButtons(true);
                 }
                 case STATE_UPDATE -> {
-                    GameState gs = (GameState) gameMessage.getData();
-                    gameControl.resetGameGUI(gs, user);
+                    if (gameMessage.getData() instanceof GameState gs) {
+                        System.out.println("stateUpdate() called");
+                        gameControl.resetGameGUI(gs, user);
+                    }
                 }
                 case WINNER -> {
+                    System.out.println("winner() called");
                     User winner = (User) gameMessage.getData();
                     // view.gamePanel.notifyWinner(winner)
                 }

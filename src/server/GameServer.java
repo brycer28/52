@@ -148,6 +148,7 @@ public class GameServer extends AbstractServer {
                 }
 
                 case PLAYER_ACTION -> {
+                    System.out.println("Player Action Recieved");
                     User user = clientUserMap.get(client);
                     Options opt = (Options) gm.getData();
 

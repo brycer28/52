@@ -1,9 +1,10 @@
 package cards;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Stack;
 
-public class Deck extends Stack<Card> {
+public class Deck extends Stack<Card> implements Serializable {
     public Deck() {
         super();
         createDeck();

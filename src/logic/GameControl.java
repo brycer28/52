@@ -26,15 +26,19 @@ public class GameControl implements ActionListener {
 
         switch (command) {
             case "Check" -> {
+                System.out.println("Check");
                 client.sendMessageToServer(new GameMessage<TexasHoldem.Options>(GameMessage.MessageType.PLAYER_ACTION, TexasHoldem.Options.CHECK));
             }
             case "Call" -> {
+                System.out.println("Call");
                 client.sendMessageToServer(new GameMessage<TexasHoldem.Options>(GameMessage.MessageType.PLAYER_ACTION, TexasHoldem.Options.CALL));
             }
             case "Fold" -> {
+                System.out.println("Fold");
                 client.sendMessageToServer(new GameMessage<TexasHoldem.Options>(GameMessage.MessageType.PLAYER_ACTION, TexasHoldem.Options.FOLD));
             }
             case "Raise" -> {
+                System.out.println("Raise");
                 client.sendMessageToServer(new GameMessage<TexasHoldem.Options>(GameMessage.MessageType.PLAYER_ACTION, TexasHoldem.Options.RAISE));
             }
         }
@@ -51,17 +55,26 @@ public class GameControl implements ActionListener {
     }
 
     public void startGame() {
-        frame.setPanel(MainGameFrame.View.GAME);
+        if (frame == null) {
+            System.out.println("NULL FRAME!!!!!!");
+        }
+        SwingUtilities.invokeLater(() -> {
+            frame.setPanel(MainGameFrame.View.GAME);
+        });
     }
 
     public void resetGameGUI(GameState gameState, User user) {
-        frame.getGamePanel().updateFromGameState(gameState, user);
+        SwingUtilities.invokeLater(() -> {
+            frame.getGamePanel().updateFromGameState(gameState, user);
+        });
     }
 
     public void toggleButtons(boolean state)  {
-        for (JButton button : frame.getGamePanel().getButtons()) {
-            button.setEnabled(state);
-        }
+        SwingUtilities.invokeLater(() -> {
+            for (JButton button : frame.getGamePanel().getButtons()) {
+                button.setEnabled(state);
+            }
+        });
     }
 
     public MainGameFrame getFrame() { return frame; }

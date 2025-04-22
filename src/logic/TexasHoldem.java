@@ -31,10 +31,11 @@ public class TexasHoldem {
 
     public TexasHoldem(GameServer gs) {
         this.server = gs;
+        this.players = new ArrayList<>(gs.getClients().values());
     }
 
     public void startGame() {
-        this.phase = GameState.GamePhase.PRE_FLOP;
+        resetGame();
 
         for (User user : players) {
             user.getHand().dealCard(deck);
@@ -51,41 +52,14 @@ public class TexasHoldem {
     public void playRound() throws IOException {
         // ############## Pre-Flop ####################
         // broadcast new game state to update client views
-        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
+//        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState()));
+
+        server.sendToAllClients(new GameMessage<>(MessageType.START_GAME, this.getGameState()));
 
         // execute one betting round (pre-flop) - end of betting round should broadcast state update again to update pot, bet, etc
         executeBettingRound();  
 
-        // ############## Post-Flop ####################
-
-        for (int i = 0; i < 3; i++) {
-            communityCards.dealCard(deck);
-        }
-
-        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
-
-        executeBettingRound();
-
-        // ############## Turn ####################
-
-        communityCards.dealCard(deck);
-
-        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
-
-        executeBettingRound();
-
-        // ############## River ####################
-
-        communityCards.dealCard(deck);
-
-        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
-
-        executeBettingRound();
-
-        // ############## Showdown ####################
-
-        // check each players hand to determine a winner of this round - method should handle broadcast of winner
-        determineWinner();
+        nextPhase();
     }
 
     public void executeBettingRound() throws IOException {
@@ -101,20 +75,24 @@ public class TexasHoldem {
     public void nextPhase() throws IOException {
         switch (phase) {
             case PRE_FLOP -> {
+                System.out.println("Pre flop");
                 for (int i = 0; i < 3; i++) {
                     communityCards.dealCard(deck);
                 }
                 phase = GameState.GamePhase.FLOP;
             }
             case FLOP -> {
+                System.out.println("Flop");
                 communityCards.dealCard(deck);
                 phase = GameState.GamePhase.TURN;
             }
             case TURN -> {
+                System.out.println("Turn");
                 communityCards.dealCard(deck);
                 phase = GameState.GamePhase.RIVER;
             }
             case RIVER -> {
+                System.out.println("River");
                 phase = GameState.GamePhase.SHOWDOWN;
                 determineWinner();
                 return;
@@ -128,19 +106,20 @@ public class TexasHoldem {
     public void promptCurrentUser() throws IOException {
         // broadcast state update if end of betting round
         if (playersToAct == 0) {
-            server.sendToAllClients(new GameMessage<GameState>(MessageType.STATE_UPDATE, this.getGameState()));
+            server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState()));
             return;
         }
 
         User currentUser = players.get(currentPlayerIndex);
 
         if (!currentUser.isActive()) {
+            System.out.println("You are not in active state");
             promptNextUser();
             return;
         }
 
         try {
-            server.sendToUser(new GameMessage<User>(MessageType.NOTIFY_TURN, currentUser), currentUser);
+            server.sendToUser(new GameMessage<>(MessageType.NOTIFY_TURN, currentUser), currentUser);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -153,28 +132,26 @@ public class TexasHoldem {
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         } while (!players.get(currentPlayerIndex).isActive());
 
-        promptCurrentUser();
+        promptCurrentUser(); // call this after action is recieved
     }
 
     // this method should only take in GameMessage(PLAYER_ACTION, User)
     public void handleOption(Options opt, User user) throws IOException {
         validOption = false;
 
-        while (!validOption) {
-            switch (opt) {
-                case CHECK ->
-                    handleCheck(user);
-                case CALL ->
-                    handleCall(user);
-                case RAISE ->
-                    handleRaise(user);
-                case FOLD ->
-                    handleFold(user);
-            }
+        switch (opt) {
+            case CHECK ->
+                handleCheck(user);
+            case CALL ->
+                handleCall(user);
+            case RAISE ->
+                handleRaise(user);
+            case FOLD ->
+                handleFold(user);
         }
 
         if (validOption) {
-            if (isRoundOver()) {
+            if (--playersToAct <= 0) {
                 nextPhase();
             } else {
                 promptNextUser();
@@ -184,7 +161,6 @@ public class TexasHoldem {
 
     public void handleCheck(User user) {
         if (getCurrentBet() == 0) {
-            // remove player from active player list
             validOption = true;
         }
     }

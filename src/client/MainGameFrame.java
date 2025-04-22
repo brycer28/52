@@ -28,6 +28,7 @@ public class MainGameFrame extends JFrame {
 
     public MainGameFrame() {
         super("Texas Hold'em"); // Set window title
+        setResizable(false);
         client = null;
 
 
@@ -84,6 +85,7 @@ public class MainGameFrame extends JFrame {
     }
 
     public void setPanel(View v) {
+        System.out.println("FRAME CHANGE");
         switch (v) {
             case INITIAL -> cardLayout.show(cardPanel, "0");
             case LOGIN -> cardLayout.show(cardPanel, "1");
@@ -95,6 +97,5 @@ public class MainGameFrame extends JFrame {
     public JPanel getCardPanel() { return cardPanel; }
     public TexasHoldemPanel getGamePanel() { return gamePanel; }
     public GameClient getClient() { return client; }
-
 }
 
