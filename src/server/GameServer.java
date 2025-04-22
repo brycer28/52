@@ -29,8 +29,6 @@ public class GameServer extends AbstractServer {
     private DatabaseClass database;
     private int chipCount = 500;
 
-    // Text areas in the GUI for showing user counts
-
     // Map of Users
     private HashMap<ConnectionToClient, User> clientUserMap = new HashMap<>();
     
@@ -73,8 +71,7 @@ public class GameServer extends AbstractServer {
     public void handleSuccessfulLogin(ConnectionToClient client) {
         unauthenticatedUsers--;
         authenticatedUsers++;
-        client.setInfo("authenticated", true);
-        clientUserMap.put(client, new User("foo", 500)); // each ConnectionToClient should be directly mapped to a User object. Can handle creation wherever you guys like
+        client.setInfo("authenticated", true); // each ConnectionToClient should be directly mapped to a User object. Can handle creation wherever you guys like
         updateCounterDisplays();
     }
 
@@ -92,25 +89,27 @@ public class GameServer extends AbstractServer {
         System.out.println("handleMessageFromClient() called");
         if (msg instanceof GameMessage<?>) {
             GameMessage<?> gm = (GameMessage<?>) msg;
+
             switch (gm.getType()) {
                 case LOGIN -> {
                     LoginData data = (LoginData) ((GameMessage<?>) msg).getData();
-                    System.out.println(data.getUsername() + "\n" + data.getPassword());
 
                     if (database.verifyAccount(data.getUsername(), data.getPassword())) {
                         System.out.println("LOGIN VERIFIED");
+                        User user = new User(data.getUsername(), 500);
+                        clientUserMap.put(client, user);
+
+                        handleSuccessfulLogin(client);
+
+                        ArrayList<User> users = new ArrayList<>(clientUserMap.values());
+
+                        GameState gs = new GameState(users, new Hand(), 0,0,0, null);
+                        GameMessage<User> newUser = new GameMessage<>(GameMessage.MessageType.LOGIN_SUCCESS, user);
+
                         try {
-                            GameMessage <LoginData> loginResult = new GameMessage<>(GameMessage.MessageType.LOGIN, new LoginData("loginSuccessful",null));
-                            client.sendToClient(loginResult);
-                            handleSuccessfulLogin(client);
-
-                            User u = new User("brycer", 500);
-                            ArrayList<User> users = new ArrayList<User>();
-                            GameState gs = new GameState(users, new Hand(), 0,0);
-
-                            sendToAllClients(new GameMessage(GameMessage.MessageType.START_GAME, gs));
+                            client.sendToClient(newUser);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
                     }
                     else {
@@ -122,7 +121,6 @@ public class GameServer extends AbstractServer {
                             e.printStackTrace();
                         }
                     }
-
                 }
 
                 case CREATE_ACC -> {
@@ -152,13 +150,31 @@ public class GameServer extends AbstractServer {
 
                 case PLAYER_ACTION -> {
                     User user = clientUserMap.get(client);
-                    game.handleOption((Options) gm.getData(), user);
+                    Options opt = (Options) gm.getData();
 
-                    // needs to broadcast a state update
+                    if (!senderIsCurrentUser(client)) {
+                        return;
+                    }
 
-                    // after state update, prompt next player - may need to do prompt outside of this method though
+                    try {
+                        game.handleOption((Options) gm.getData(), user);
+
+                        if (game.isRoundOver()) {
+                            if (game.getGameState().getPhase() == GameState.GamePhase.SHOWDOWN) {
+                                game.determineWinner();
+                                game.resetGame();
+                            } else {
+                                game.nextPhase();
+                            }
+                        } else {
+                            game.promptNextUser();
+                        }
+
+                        sendToAllClients(new GameMessage(GameMessage.MessageType.STATE_UPDATE, game.getGameState()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                // add more options here - currently only Client -> Server comm should be inputting options
             }
         }
     }
@@ -182,13 +198,13 @@ public class GameServer extends AbstractServer {
         }
     }
 
-    public ArrayList<ConnectionToClient> getClients() {
-        ArrayList<ConnectionToClient> clients = new ArrayList<>();
-        for (Map.Entry<ConnectionToClient, User> entry : clientUserMap.entrySet()) {
-            ConnectionToClient client = entry.getKey();
-            clients.add(client);
-        }
-        return clients;
+    public Map<ConnectionToClient, User> getClients() {
+        return clientUserMap;
+    }
+
+    private boolean senderIsCurrentUser(ConnectionToClient client) {
+        User current = game.getPlayerList().get(game.getCurrentPlayerIndex());
+        return current.equals(clientUserMap.get(client));
     }
 
     public int getUnauthenticatedUsers() { return unauthenticatedUsers; }

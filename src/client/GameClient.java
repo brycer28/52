@@ -24,7 +24,7 @@ public class GameClient extends AbstractClient {
     private LoginControl loginControl;
     private CreateAccountControl createAccountControl;
     private GameControl gameControl;
-
+    private User user;
 
     public GameClient(String host, int port) throws IOException {
         super(host, port);
@@ -55,7 +55,7 @@ public class GameClient extends AbstractClient {
 
             switch (gameMessage.getType()) {
                 case LOGIN -> {
-
+                    System.out.println("Login");
                     if (gameMessage.getData() instanceof LoginData) {
                         loginControl.displayMessageWindow("Successfully Logged in!");
                     }
@@ -64,7 +64,16 @@ public class GameClient extends AbstractClient {
                         loginControl.displayMessageWindow("The username or password is incorrect");
                     }
                 }
+                case LOGIN_SUCCESS -> {
+                    System.out.println("Successfully Logged in!");
+                    if (gameMessage.getData() instanceof User user) {
+                        this.user = user;
+                    } else if (gameMessage.getData() instanceof Error) {
+                        loginControl.displayMessageWindow("LOGIN FAILED :(");
+                    }
+                }
                 case CREATE_ACC -> {
+                    System.out.println("createAccount() called");
                     if (gameMessage.getData() instanceof CreateAccountData) {
                         createAccountControl.displayMessageWindow("Account Created Successfully! Return to login page to log in");
                     }
@@ -74,21 +83,20 @@ public class GameClient extends AbstractClient {
                     }
                 }
                 case START_GAME -> {
-                    GameState gs = (GameState) gameMessage.getData();
-
-                    /*Card c1 = new Card(Card.Suit.CLUBS, Card.Rank.TEN);
-                    Hand cc = new Hand()*/
-                    gameControl.startGame();
-                    gameControl.resetGameGUI(gs);
-
+                    System.out.println("startGame() called");
+                    if (gameMessage.getData() instanceof GameState gs) {
+                        System.out.println("startGame() called");
+                        gameControl.startGame();
+                        gameControl.resetGameGUI(gs, user);
+                    }
                     // updateGameState(gs);
                 }
                 case NOTIFY_TURN -> {
-                    // view.gamePanel.promptOption();
+                    gameControl.toggleButtons(true);
                 }
                 case STATE_UPDATE -> {
                     GameState gs = (GameState) gameMessage.getData();
-                    // updateGameState(gs);
+                    gameControl.resetGameGUI(gs, user);
                 }
                 case WINNER -> {
                     User winner = (User) gameMessage.getData();
@@ -110,12 +118,6 @@ public class GameClient extends AbstractClient {
                 }
             }
         }
-    }
-
-    public void updateGameState(GameState gameState) {
-        SwingUtilities.invokeLater(() -> {
-            // fill in this
-        });
     }
 }
 

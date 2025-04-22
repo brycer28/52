@@ -58,7 +58,6 @@ public class MainGameFrame extends JFrame {
         client.setCreateAccountControl(cc);
         client.setGameControl(gc);
 
-
         //Views
         initialPanel = new InitialPanel(ic);
         loginPanel = new LoginPanel(lc);
@@ -104,6 +103,7 @@ public class MainGameFrame extends JFrame {
     }
 
     public JPanel getCardPanel() { return cardPanel; }
+    public TexasHoldemPanel getGamePanel() { return gamePanel; }
     public GameClient getClient() { return client; }
 
 }

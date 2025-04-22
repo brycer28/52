@@ -1,9 +1,16 @@
 package server;
 
+import account.User;
+import cards.Hand;
+import logic.GameMessage;
+import logic.GameState;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 public class ServerGUI extends JFrame {
     // GUI components
@@ -12,6 +19,7 @@ public class ServerGUI extends JFrame {
     private JTextArea logArea;
     private JButton startButton;
     private JButton stopButton;
+    private JButton startGameButton;
 
     private GameServer server;
     private DatabaseClass database;
@@ -44,15 +52,23 @@ public class ServerGUI extends JFrame {
         // create buttons to start/stop server and a panel to contain them
         startButton = new JButton("Start Server");
         stopButton = new JButton("Stop Server");
+        startGameButton = new JButton("Start Game");
         stopButton.setEnabled(false); // disable button until server starts
 
         startButton.addActionListener(e -> startServer());
         stopButton.addActionListener(e -> stopServer());
+        startGameButton.addActionListener(e -> {
+            try {
+                startGame();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(startButton);
         buttonPanel.add(stopButton);
-
+        buttonPanel.add(startGameButton);
 
         if (database.getConnection() != null) {
             logArea.append("Database connection established\n");
@@ -122,6 +138,13 @@ public class ServerGUI extends JFrame {
         SwingUtilities.invokeLater(() -> {
             logArea.append(logMsg + "\n");
         });
+    }
+
+    public void startGame() throws IOException {
+        ArrayList<User> players = new ArrayList<>(server.getClients().values());
+        GameState initialState = new GameState(players, new Hand(), 0,0,0, null);
+
+        server.sendToAllClients(new GameMessage<GameState>(GameMessage.MessageType.START_GAME, initialState));
     }
 
     // Main method to launch the GUI

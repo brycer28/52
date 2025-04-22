@@ -6,8 +6,8 @@ import cards.Hand.HandValue;
 import graphics.TexasHoldemPanel;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.*;
-import logic.GameMessage.MessageType;
+
+import logic.GameMessage.*;
 
 import server.GameServer;
 
@@ -18,12 +18,13 @@ public class TexasHoldem {
     private int pot = 0;
     private int currentBet = 0;
     private int raiseAmount = 0;
-    private CountDownLatch latch;
     private boolean validOption;
     private boolean validRaise;
-    private Options playerOption;
     private GameServer server;
     private ArrayList<User> players = new ArrayList<>();
+    private int currentPlayerIndex = 0;
+    private int playersToAct = 0;
+    private GameState.GamePhase phase;
 
     public enum Options {
         CHECK, CALL, RAISE, FOLD
@@ -35,22 +36,22 @@ public class TexasHoldem {
 
     public void startGame() {
         resetGame();
-
-        // set up initial game state - initialize users using their account balance
-
-//        server.sendToAllClients(new GameMessage<>(MessageType.START_GAME, new GameState())); // need fixes to make this functional
-
-//        playRound();
-    }
-
-    public void playRound() throws IOException {
-        // ############## Pre-Flop ####################
+        this.phase = GameState.GamePhase.PRE_FLOP;
 
         for (User user : players) {
             user.getHand().dealCard(deck);
             user.getHand().dealCard(deck);
         }
-        
+
+        try {
+            playRound();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void playRound() throws IOException {
+        // ############## Pre-Flop ####################
         // broadcast new game state to update client views
         server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
 
@@ -89,43 +90,96 @@ public class TexasHoldem {
         determineWinner();
     }
 
-    public void executeBettingRound() {
+    public void executeBettingRound() throws IOException {
         currentBet = 0;
+        currentPlayerIndex = 0;
 
-        for (User user : players) {
-            if (!user.isActive()) continue;
+        playersToAct = (int) players.stream().filter(User::isActive).count();
 
-            // notify player that it is their turn
-            GameMessage<User> msg = new GameMessage<>(MessageType.NOTIFY_TURN, user);
-            try {
-                // server has a map of User-ConnectionToClient - send a turn notification to signal prompt for option
-                server.sendToUser(msg, user);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+        // recursive method to handle turns
+        promptCurrentUser();
+    }
+
+    public void nextPhase() throws IOException {
+        switch (phase) {
+            case PRE_FLOP -> {
+                for (int i = 0; i < 3; i++) {
+                    communityCards.dealCard(deck);
+                }
+                phase = GameState.GamePhase.FLOP;
             }
-            // server SHOULD be doing the handleOption when clients respond to notification
+            case FLOP -> {
+                communityCards.dealCard(deck);
+                phase = GameState.GamePhase.TURN;
+            }
+            case TURN -> {
+                communityCards.dealCard(deck);
+                phase = GameState.GamePhase.RIVER;
+            }
+            case RIVER -> {
+                phase = GameState.GamePhase.SHOWDOWN;
+                determineWinner();
+                return;
+            }
+        }
+
+        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState() ));
+        executeBettingRound();
+    }
+
+    public void promptCurrentUser() throws IOException {
+        // broadcast state update if end of betting round
+        if (playersToAct == 0) {
+            server.sendToAllClients(new GameMessage<GameState>(MessageType.STATE_UPDATE, this.getGameState()));
+            return;
+        }
+
+        User currentUser = players.get(currentPlayerIndex);
+
+        if (!currentUser.isActive()) {
+            promptNextUser();
+            return;
+        }
+
+        try {
+            server.sendToUser(new GameMessage<User>(MessageType.NOTIFY_TURN, currentUser), currentUser);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    // this method should only take in GameMessage(PLAYER_ACTION, User)
-    public void handleOption(Options opt, User user) {
+    public void promptNextUser() throws IOException {
+        playersToAct--;
 
+        do {
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        } while (!players.get(currentPlayerIndex).isActive());
+
+        promptCurrentUser();
+    }
+
+    // this method should only take in GameMessage(PLAYER_ACTION, User)
+    public void handleOption(Options opt, User user) throws IOException {
         validOption = false;
 
         while (!validOption) {
             switch (opt) {
-                case CHECK:
+                case CHECK ->
                     handleCheck(user);
-                    break;
-                case CALL:
+                case CALL ->
                     handleCall(user);
-                    break;
-                case RAISE:
+                case RAISE ->
                     handleRaise(user);
-                    break;
-                case FOLD:
+                case FOLD ->
                     handleFold(user);
-                    break;
+            }
+        }
+
+        if (validOption) {
+            if (isRoundOver()) {
+                nextPhase();
+            } else {
+                promptNextUser();
             }
         }
     }
@@ -160,14 +214,13 @@ public class TexasHoldem {
                     validRaise = true;
                 }
             }
+            validOption = true;
         }
     }
 
 
     public void handleFold(User user) {
-        user.setBalance(user.getBalance() - currentBet); // deduct current bet from player balance
-        pot += currentBet;
-        currentBet = 0;
+        user.setActive(false);
         validOption = true;
     }
 
@@ -263,20 +316,22 @@ public class TexasHoldem {
                 this.getPlayerList(),
                 this.getCommunityCards(),
                 this.getPot(),
-                this.getCurrentBet()
+                this.getCurrentBet(),
+                this.getCurrentPlayerIndex(),
+                this.getCurrentPhase()
         );
     }
 
+    public boolean isRoundOver() {
+        long activePlayers = players.stream().filter(User::isActive).count();
+        return activePlayers <= 1 || playersToAct == 0;
+    }
     public Hand getCommunityCards() { return communityCards; }
     public TexasHoldemPanel getTexasHoldemPanel() { return GUI; }
     public int getPot() { return pot; }
     public int getCurrentBet() { return currentBet; }
     public int getRaiseAmount() { return raiseAmount; }
     public ArrayList<User> getPlayerList() { return players; }
-
-    public void setPlayerOption(Options playerOption) {
-        this.playerOption = playerOption;
-        latch.countDown();
-    }
-    public void setRaiseAmount(int raiseAmount) { this.raiseAmount = raiseAmount; }
+    public int getCurrentPlayerIndex() { return currentPlayerIndex; }
+    public GameState.GamePhase getCurrentPhase() { return phase; }
 }

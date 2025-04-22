@@ -10,12 +10,13 @@ import java.io.Serializable;
  * LOGIN: new GameMessage(mt=LOGIN, data=LoginData)
  *  - Send server a login credential request
  *
- *  CREATE_ACC: new GameMessage(mt=CREATE_ACC, data=CreateAccData)
+ * LOGIN_SUCCESS: new GameMessage(mt=LOGIN_SUCCESS, data=LoginData)
+ *  - Client->Server sends a LoginData
+ *  - In handling, Server sends a LOGIN_SUCCESS with a new User object
+ *
+ * CREATE_ACC: new GameMessage(mt=CREATE_ACC, data=CreateAccData)
  *   - Send server a create account request
  *
- * LOGIN_SUCCESS: new GameMessage(mt=LOGIN_SUCCESS
- *
-
  * START_GAME: new GameMessage(mt=START_TURN, data=GameState)
  *  - Transmit and initial GameState object to start a game
  * 
@@ -38,7 +39,7 @@ public class GameMessage<T> implements Serializable {
     private final T data;
 
     public enum MessageType {
-        LOGIN, CREATE_ACC, START_GAME, NOTIFY_TURN, PLAYER_ACTION, STATE_UPDATE, WINNER, ERROR
+        LOGIN, LOGIN_SUCCESS, CREATE_ACC, START_GAME, NOTIFY_TURN, PLAYER_ACTION, STATE_UPDATE, WINNER, ERROR
     }
 
     public GameMessage(MessageType mt, T data) {
