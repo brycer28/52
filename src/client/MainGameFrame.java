@@ -72,7 +72,6 @@ public class MainGameFrame extends JFrame {
         // Select which panel to show first
         cardLayout.show(cardPanel, "0");
 
-
         // Set the card panel as the content pane of the JFrame
         this.setContentPane(cardPanel);
 
@@ -81,15 +80,6 @@ public class MainGameFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> {
-//            GameClient client = null;
-//            try {
-//                client = new GameClient("localhost", PORT);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//            new MainGameFrame(client);
-//        });
         new MainGameFrame();
     }
 

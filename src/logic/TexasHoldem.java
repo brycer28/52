@@ -12,8 +12,7 @@ import logic.GameMessage.*;
 import server.GameServer;
 
 public class TexasHoldem {
-    private TexasHoldemPanel GUI;
-    private Deck deck;
+    private Deck deck = new Deck();
     private Hand communityCards = new Hand();
     private int pot = 0;
     private int currentBet = 0;
@@ -35,7 +34,6 @@ public class TexasHoldem {
     }
 
     public void startGame() {
-        resetGame();
         this.phase = GameState.GamePhase.PRE_FLOP;
 
         for (User user : players) {
@@ -307,7 +305,11 @@ public class TexasHoldem {
         communityCards = new Hand();
         for (User user : players) { user.resetAfterRound(); } // clear all players hands
         pot = 0;
-        GUI.resetGUI();
+        currentBet = 0;
+        raiseAmount = 0;
+        currentPlayerIndex = 0;
+        playersToAct = 0;
+        phase = GameState.GamePhase.PRE_FLOP;
     }
 
     // getters and setters
@@ -327,7 +329,6 @@ public class TexasHoldem {
         return activePlayers <= 1 || playersToAct == 0;
     }
     public Hand getCommunityCards() { return communityCards; }
-    public TexasHoldemPanel getTexasHoldemPanel() { return GUI; }
     public int getPot() { return pot; }
     public int getCurrentBet() { return currentBet; }
     public int getRaiseAmount() { return raiseAmount; }

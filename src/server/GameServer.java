@@ -38,7 +38,6 @@ public class GameServer extends AbstractServer {
     // Constructor sets up server and connects GUI text areas
     public GameServer(int port) {
         super(port);
-        this.game = new TexasHoldem(this);
 
         updateCounterDisplays();
     }
@@ -209,6 +208,11 @@ public class GameServer extends AbstractServer {
 
     public int getUnauthenticatedUsers() { return unauthenticatedUsers; }
     public int getAuthenticatedUsers() { return authenticatedUsers; }
+
+    public void startGameFromServer() {
+        game = new TexasHoldem(this);
+        game.startGame();
+    }
 
     // // Handles interaction with game server updating based on client input from handleMessageFromClient
     // private void handlePlayerAction(Options opt, ConnectionToClient client) {

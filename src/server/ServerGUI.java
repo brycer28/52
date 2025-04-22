@@ -58,11 +58,7 @@ public class ServerGUI extends JFrame {
         startButton.addActionListener(e -> startServer());
         stopButton.addActionListener(e -> stopServer());
         startGameButton.addActionListener(e -> {
-            try {
-                startGame();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            server.startGameFromServer();
         });
 
         JPanel buttonPanel = new JPanel();
