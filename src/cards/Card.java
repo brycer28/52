@@ -1,6 +1,8 @@
 package cards;
 
-public class Card {
+import java.io.Serializable;
+
+public class Card implements Serializable {
     public enum Suit {
         CLUBS, DIAMONDS, HEARTS, SPADES;
     }

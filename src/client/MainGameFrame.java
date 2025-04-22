@@ -28,6 +28,7 @@ public class MainGameFrame extends JFrame {
 
     public MainGameFrame() {
         super("Texas Hold'em"); // Set window title
+        setResizable(false);
         client = null;
 
 
@@ -58,7 +59,6 @@ public class MainGameFrame extends JFrame {
         client.setCreateAccountControl(cc);
         client.setGameControl(gc);
 
-
         //Views
         initialPanel = new InitialPanel(ic);
         loginPanel = new LoginPanel(lc);
@@ -73,7 +73,6 @@ public class MainGameFrame extends JFrame {
         // Select which panel to show first
         cardLayout.show(cardPanel, "0");
 
-
         // Set the card panel as the content pane of the JFrame
         this.setContentPane(cardPanel);
 
@@ -82,19 +81,11 @@ public class MainGameFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> {
-//            GameClient client = null;
-//            try {
-//                client = new GameClient("localhost", PORT);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//            new MainGameFrame(client);
-//        });
         new MainGameFrame();
     }
 
     public void setPanel(View v) {
+        System.out.println("FRAME CHANGE");
         switch (v) {
             case INITIAL -> cardLayout.show(cardPanel, "0");
             case LOGIN -> cardLayout.show(cardPanel, "1");
@@ -104,7 +95,7 @@ public class MainGameFrame extends JFrame {
     }
 
     public JPanel getCardPanel() { return cardPanel; }
+    public TexasHoldemPanel getGamePanel() { return gamePanel; }
     public GameClient getClient() { return client; }
-
 }
 

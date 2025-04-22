@@ -1,10 +1,12 @@
 package cards;
 
 import cards.Card.Rank;
+
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Hand extends ArrayList<Card> {
+public class Hand extends ArrayList<Card> implements Serializable {
     public enum HandValue {
         HIGH_CARD, PAIR, TWO_PAIR, THREE_OF_A_KIND,
         STRAIGHT, FLUSH, FULL_HOUSE, FOUR_OF_A_KIND,
@@ -39,8 +41,7 @@ public class Hand extends ArrayList<Card> {
     }
 
     public void dealCard(Deck deck) {
-        add(deck.peek());
-        deck.pop();
+        add(deck.pop());
     }
 
     // determine tie breaker in the event that 2 players have the same HandType
