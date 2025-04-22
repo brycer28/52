@@ -42,6 +42,7 @@ public class GameMessage<T> implements Serializable {
         LOGIN, LOGIN_SUCCESS, CREATE_ACC, START_GAME, NOTIFY_TURN, PLAYER_ACTION, STATE_UPDATE, WINNER, ERROR
     }
 
+
     public GameMessage(MessageType mt, T data) {
         this.type = mt;
         this.data = data;
@@ -53,4 +54,16 @@ public class GameMessage<T> implements Serializable {
     }
     public MessageType getType() { return type; }
     public T getData() { return data; }
+
+    public static class RaiseAction implements Serializable {
+        private TexasHoldem.Options option;
+        private int raiseAmt;
+
+        public RaiseAction(TexasHoldem.Options option, int raiseAmt) {
+            this.option = option;
+            this.raiseAmt = raiseAmt;
+        }
+        public TexasHoldem.Options getOption() { return option; }
+        public int getRaiseAmt() { return raiseAmt; }
+    }
 }

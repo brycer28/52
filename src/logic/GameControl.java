@@ -4,6 +4,7 @@ import account.User;
 import client.GameClient;
 import client.MainGameFrame;
 import client.MainGameFrame.*;
+import logic.GameMessage.*;
 import com.sun.tools.javac.Main;
 
 import javax.swing.*;
@@ -39,7 +40,27 @@ public class GameControl implements ActionListener {
             }
             case "Raise" -> {
                 System.out.println("Raise");
-                client.sendMessageToServer(new GameMessage<TexasHoldem.Options>(GameMessage.MessageType.PLAYER_ACTION, TexasHoldem.Options.RAISE));
+
+                String raiseAmtStr = JOptionPane.showInputDialog(
+                        null,
+                        "Enter raise amount: ",
+                        "Raise",
+                        JOptionPane.QUESTION_MESSAGE
+                );
+
+                if (raiseAmtStr != null && !raiseAmtStr.isEmpty()) {
+                    try {
+                        int raiseAmt = Integer.parseInt(raiseAmtStr);
+                        GameMessage.RaiseAction raiseAction = new RaiseAction(TexasHoldem.Options.RAISE, raiseAmt);
+                        client.sendMessageToServer(new GameMessage<>(GameMessage.MessageType.PLAYER_ACTION, raiseAction));
+                    } catch (NumberFormatException ex){
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Invalid raise amount: " + raiseAmtStr,
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
         }
     }

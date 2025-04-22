@@ -41,8 +41,7 @@ public class Hand extends ArrayList<Card> implements Serializable {
     }
 
     public void dealCard(Deck deck) {
-        add(deck.peek());
-        deck.pop();
+        add(deck.pop());
     }
 
     // determine tie breaker in the event that 2 players have the same HandType

@@ -150,14 +150,20 @@ public class GameServer extends AbstractServer {
                 case PLAYER_ACTION -> {
                     System.out.println("Player Action Recieved");
                     User user = clientUserMap.get(client);
-                    Options opt = (Options) gm.getData();
 
                     if (!senderIsCurrentUser(client)) {
                         return;
                     }
 
+                    int raiseAmt = 0;
+                    if (gm.getData() instanceof GameMessage.RaiseAction raiseAction) {
+                        if (raiseAction.getOption() == Options.RAISE) {
+                            raiseAmt = raiseAction.getRaiseAmt();
+                        }
+                    }
+
                     try {
-                        game.handleOption((Options) gm.getData(), user);
+                        game.handleOption((Options) gm.getData(), user, raiseAmt);
 
                         if (game.isRoundOver()) {
                             if (game.getGameState().getPhase() == GameState.GamePhase.SHOWDOWN) {

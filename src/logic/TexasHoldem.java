@@ -38,6 +38,7 @@ public class TexasHoldem {
         resetGame();
 
         for (User user : players) {
+            user.clearHand();
             user.getHand().dealCard(deck);
             user.getHand().dealCard(deck);
         }
@@ -50,14 +51,12 @@ public class TexasHoldem {
     }
 
     public void playRound() throws IOException {
-        // ############## Pre-Flop ####################
-        // broadcast new game state to update client views
-//        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState()));
-
         server.sendToAllClients(new GameMessage<>(MessageType.START_GAME, this.getGameState()));
+        server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState()));
 
         // execute one betting round (pre-flop) - end of betting round should broadcast state update again to update pot, bet, etc
-        executeBettingRound();  
+        this.phase = GameState.GamePhase.PRE_FLOP;
+        executeBettingRound();
 
         nextPhase();
     }
@@ -76,14 +75,14 @@ public class TexasHoldem {
         switch (phase) {
             case PRE_FLOP -> {
                 System.out.println("Pre flop");
-                for (int i = 0; i < 3; i++) {
-                    communityCards.dealCard(deck);
-                }
                 phase = GameState.GamePhase.FLOP;
             }
             case FLOP -> {
                 System.out.println("Flop");
-                communityCards.dealCard(deck);
+                communityCards.clear();
+                for (int i = 0; i < 3; i++) {
+                    communityCards.dealCard(deck);
+                }
                 phase = GameState.GamePhase.TURN;
             }
             case TURN -> {
@@ -93,6 +92,7 @@ public class TexasHoldem {
             }
             case RIVER -> {
                 System.out.println("River");
+                communityCards.dealCard(deck);
                 phase = GameState.GamePhase.SHOWDOWN;
                 determineWinner();
                 return;
@@ -136,7 +136,7 @@ public class TexasHoldem {
     }
 
     // this method should only take in GameMessage(PLAYER_ACTION, User)
-    public void handleOption(Options opt, User user) throws IOException {
+    public void handleOption(Options opt, User user, int raiseAmount) throws IOException {
         validOption = false;
 
         switch (opt) {
@@ -145,12 +145,21 @@ public class TexasHoldem {
             case CALL ->
                 handleCall(user);
             case RAISE ->
-                handleRaise(user);
+                handleRaise(user, raiseAmount);
             case FOLD ->
                 handleFold(user);
         }
 
         if (validOption) {
+            server.sendToAllClients(new GameMessage<>(MessageType.STATE_UPDATE, this.getGameState()));
+
+            if (players.stream().filter(User::isActive).count() == 1) {
+                User winner = players.stream().filter(User::isActive).findFirst().get();
+                winner.setBalance(winner.getBalance() + pot);
+                server.sendToAllClients(new GameMessage<>(MessageType.WINNER, winner));
+                return;
+            }
+
             if (--playersToAct <= 0) {
                 nextPhase();
             } else {
@@ -167,28 +176,26 @@ public class TexasHoldem {
 
     public void handleCall(User user) {
         // ensure there is a current bet and player has enough chips
-        if (currentBet > 0 && (user.getBalance() > currentBet)) {
-            user.setBalance(user.getBalance() - currentBet);
+        if (currentBet > 0) {
+            int amtToCall = currentBet - user.getCurrentBet();
 
-            pot += currentBet;
+            if (user.getBalance() >= amtToCall) {
+                user.setBalance(user.getBalance() - amtToCall);
+                pot += amtToCall;
+            }
             validOption = true;
         }
     }
 
-    public void handleRaise(User user) {
+    public void handleRaise(User user, int raiseAmount) throws IOException {
         // ensure player has enough to raise
-        if (user.getBalance() > currentBet) {
-            while(!validRaise) {
-                raiseAmount = getRaiseAmount();
-                
-                if (raiseAmount > 0 && (user.getBalance() >= currentBet + raiseAmount)) {
-                    user.setBalance(user.getBalance() - raiseAmount); // may need to change this to cBet + raiseAmt
-                    currentBet += raiseAmount;
-                    pot += raiseAmount;
-                    validRaise = true;
-                }
-            }
+        if (raiseAmount > 0 && (user.getBalance() >= currentBet + raiseAmount)) {
+            user.setBalance(user.getBalance() - raiseAmount); // may need to change this to cBet + raiseAmt
+            currentBet += raiseAmount;
+            pot += raiseAmount;
             validOption = true;
+        } else {
+            server.sendToUser(new GameMessage<>(MessageType.ERROR, "ERROR" ), user);
         }
     }
 
@@ -266,11 +273,10 @@ public class TexasHoldem {
             for (User user : players) {
                 if (user == winner) {
                     user.setBalance(user.getBalance() + pot);
-                } else {
-                    user.setBalance(user.getBalance() - currentBet); // not certain if this is correct
                 }
             }
-            
+
+
             // GUI.displayWinner(winner)
             // GUI.showDealerHand();  ---> GUI.showAllHands();
         }

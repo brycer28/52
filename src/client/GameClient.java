@@ -69,6 +69,7 @@ public class GameClient extends AbstractClient {
                     System.out.println("Successfully Logged in!");
                     if (gameMessage.getData() instanceof User user) {
                         this.user = user;
+                        loginControl.displayMessageWindow("Successfully Logged in! Please wait until server starts the game");
                     } else if (gameMessage.getData() instanceof Error) {
                         loginControl.displayMessageWindow("LOGIN FAILED :(");
                     }
@@ -86,8 +87,8 @@ public class GameClient extends AbstractClient {
                 case START_GAME -> {
                     if (gameMessage.getData() instanceof GameState gs) {
                         System.out.println("startGame() called");
-                        gameControl.startGame();
-                        gameControl.resetGameGUI(gs, user);
+                        gameControl.startGame(); // switch view to gamePanel
+//                        gameControl.resetGameGUI(gs, user); // refresh graphics
                     }
                 }
                 case NOTIFY_TURN -> {

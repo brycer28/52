@@ -127,7 +127,11 @@ public class TexasHoldemPanel extends JPanel {
             playerHandPanel.repaint();
 
             this.gameState = gameState;
-            this.user = user;
+            this.user = this.gameState.getPlayers().get(gameState.getCurrentPlayerIndex());
+
+            Hand hand = this.user.getHand();
+
+            System.out.println("Hand size: " + hand.size());
 
             statsPanel.updateStats(
                     gameState.getPot(),
@@ -136,7 +140,7 @@ public class TexasHoldemPanel extends JPanel {
             );
 
             // update current players hand
-            updatePlayerHand(user.getHand());
+            updatePlayerHand(hand);
 
             // update community cards
             updateCommunityCards(gameState.getCommunityCards());
@@ -162,7 +166,7 @@ public class TexasHoldemPanel extends JPanel {
 
             for (Card card : communityCards) {
                 card.setFaceUp(true);
-                playerHandPanel.add(new CardPanel(card, CARD_WIDTH));
+                communityCardsPanel.add(new CardPanel(card, CARD_WIDTH));
             }
             communityCardsPanel.revalidate();
             communityCardsPanel.repaint();
